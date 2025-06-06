@@ -21,7 +21,7 @@ texto_pdf = extraer_texto_pdf("datos.pdf")
 def buscar_respuesta(pregunta):
     prompt = f"Con base en el siguiente texto, responde la pregunta:\n\n{texto_pdf[:3000]}\n\nPregunta: {pregunta}"
     respuesta = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "Eres un asistente experto que responde basándote exclusivamente en el contenido proporcionado."},
             {"role": "user", "content": prompt}
