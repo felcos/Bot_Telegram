@@ -3,6 +3,7 @@ import fitz  # PyMuPDF
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
+import telegram.error  # para capturar excepciones específicas
 
 # Inicializar cliente OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -29,18 +30,24 @@ def buscar_respuesta(pregunta):
     )
     return respuesta.choices[0].message.content.strip()
 
-# Función de respuesta al mensaje recibido en Telegram
+# Función que responde a mensajes recibidos
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
     respuesta = buscar_respuesta(pregunta)
     await update.message.reply_text(respuesta)
 
-# Punto de entrada principal
+# Main con manejo de conflicto
 def main():
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     app = ApplicationBuilder().token(token).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
-    app.run_polling()
+    try:
+        app.run_polling()
+    except telegram.error.Conflict:
+        print("⚠️ ERROR: El bot ya está en ejecución en otra parte (Render, PC o Codespace).")
+        print("💡 Detén las demás instancias antes de volver a ejecutar este bot.")
+    except Exception as e:
+        print(f"❌ Error inesperado: {e}")
 
 if __name__ == "__main__":
     main()
