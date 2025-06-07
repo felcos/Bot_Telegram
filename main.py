@@ -1,59 +1,75 @@
 import os
+import logging
 import fitz  # PyMuPDF
 from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
-from openai import OpenAI
-from openai.types.chat import ChatCompletionMessageParam
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from openai import OpenAI, APIError, RateLimitError
 from dotenv import load_dotenv
 
-# Carga variables de entorno desde un archivo .env
+# Cargar variables de entorno
 load_dotenv()
-
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Inicializa el cliente OpenAI
+# Inicializar cliente OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# Carga todos los PDFs desde la carpeta "documentos"
-def cargar_todos_los_pdfs(ruta="documentos"):
-    contenido = ""
-    for archivo in os.listdir(ruta):
-        if archivo.endswith(".pdf"):
-            ruta_completa = os.path.join(ruta, archivo)
-            with fitz.open(ruta_completa) as doc:
-                for pagina in doc:
-                    contenido += pagina.get_text()
-    return contenido
+# Cargar texto desde PDF
+def cargar_pdf(ruta):
+    texto = ""
+    with fitz.open(ruta) as pdf:
+        for pagina in pdf:
+            texto += pagina.get_text()
+    return texto
 
-# Cargamos el contenido de todos los PDFs al iniciar
-contenido_documentos = cargar_todos_los_pdfs()
+# Detectar si la pregunta requiere plantilla
+def detectar_plantilla(pregunta):
+    palabras_clave = {
+        "informe técnico": "plantillas/informe_tecnico.pdf",
+        "formulario de reclamación": "plantillas/formulario_reclamacion.pdf",
+        "modelo de contrato": "plantillas/modelo_contrato.pdf",
+        # Añadir más como quieras
+    }
+    for clave, ruta in palabras_clave.items():
+        if clave.lower() in pregunta.lower():
+            return ruta, clave
+    return None, None
 
-# Función que busca una respuesta en OpenAI
-def buscar_respuesta(pregunta):
-    messages: list[ChatCompletionMessageParam] = [
-        {"role": "system", "content": "Responde usando solo la información contenida en los documentos PDF proporcionados."},
-        {"role": "user", "content": f"Contenido del documento:\n{contenido_documentos}"},
-        {"role": "user", "content": f"Pregunta: {pregunta}"}
-    ]
+# Buscar respuesta con GPT-4o
+def buscar_respuesta(pregunta, contexto):
+    try:
+        respuesta = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "Eres un asistente que responde con base en un documento PDF proporcionado."},
+                {"role": "user", "content": f"Pregunta: {pregunta}\n\nTexto de referencia:\n{contexto}"}
+            ]
+        )
+        return respuesta.choices[0].message.content.strip()
+    except RateLimitError:
+        return "❗ Has superado el límite de uso de OpenAI. Intenta más tarde."
+    except APIError as e:
+        return f"❗ Error de la API de OpenAI: {str(e)}"
+    except Exception as e:
+        return f"❗ Error inesperado: {str(e)}"
 
-    response = client.chat.completions.create(
-        model="gpt-4o",  # Cambia a gpt-4o si tienes acceso
-        messages=messages,
-        temperature=0
-    )
-
-    return response.choices[0].message.content.strip()
-
-# Manejador del bot de Telegram
+# Manejador de mensajes
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
-    respuesta = buscar_respuesta(pregunta)
+    texto_pdf = cargar_pdf("documentos/datos_1.pdf")
+    respuesta = buscar_respuesta(pregunta, texto_pdf)
+
+    # Enviar respuesta
     await update.message.reply_text(respuesta)
 
-# Punto de entrada principal
+    # Revisar si necesita una plantilla
+    ruta, nombre = detectar_plantilla(pregunta)
+    if ruta and os.path.exists(ruta):
+        await update.message.reply_document(document=open(ruta, "rb"), filename=os.path.basename(ruta), caption=f"Aquí tienes la plantilla de {nombre} 📄")
+
+# Iniciar bot
 if __name__ == "__main__":
-    print("Bot arrancando...")
+    logging.basicConfig(level=logging.INFO)
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
     app.run_polling()
