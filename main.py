@@ -38,7 +38,7 @@ def buscar_respuesta(pregunta):
     ]
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # Cambia a gpt-4o si tienes acceso
+        model="gpt-4o",  # Cambia a gpt-4o si tienes acceso
         messages=messages,
         temperature=0
     )
