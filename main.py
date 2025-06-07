@@ -29,7 +29,7 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
     try:
         # Paso 1: Buscar coincidencias en tablas
-        resultado_tabla = buscar_en_tablas(documentos_tablas, pregunta)
+        resultado_tabla = buscar_en_tablas(pregunta,documentos_tablas)
         if resultado_tabla:
             await update.message.reply_text(resultado_tabla)
             return

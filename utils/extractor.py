@@ -66,15 +66,16 @@ def procesar_documentos(ruta_carpeta):
 def buscar_en_tablas(pregunta, base_tablas):
     mejores = []
     for fila in base_tablas:
-        texto = f"{fila['situación']} {fila['incidencias']}"
-        simil = difflib.SequenceMatcher(None, pregunta.lower(), texto.lower()).ratio()
-        if simil > 0.4:
-            mejores.append((simil, fila))
+        if isinstance(fila, dict):
+            texto = f"{fila.get('situación', '')} {fila.get('incidencias', '')}"
+            simil = difflib.SequenceMatcher(None, pregunta.lower(), texto.lower()).ratio()
+            if simil > 0.4:
+                mejores.append((simil, fila))
 
     mejores.sort(reverse=True, key=lambda x: x[0])
     if mejores:
         mejor = mejores[0][1]
-        return f"Situación: {mejor['situación']}\nIncidencias: {mejor['incidencias']}\nProcedimiento: {mejor['procedimiento']}\nReferencia Legal: {mejor['referencia legal 2022']}"
+        return f"Situación: {mejor.get('situación', '')}\nIncidencias: {mejor.get('incidencias', '')}\nProcedimiento: {mejor.get('procedimiento', '')}\nReferencia Legal: {mejor.get('referencia legal 2022', '')}"
     return None
 
 # --- Sugerencia de plantilla ---
