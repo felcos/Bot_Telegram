@@ -3,3 +3,4 @@ openai==1.33.0
 python-dotenv
 PyMuPDF
 python-docx
+python-telegram-bot[webhooks]
