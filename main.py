@@ -70,7 +70,7 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         # Paso 3: Si no se ubica, preguntar contexto
         if user_id not in contexto_usuario:
-            await update.message.reply_text("No tengo suficiente información para ayudarte. ¿Puedes describirme la situación o modalidad legal que quieres consultar?")
+            await update.message.reply_text("Para ayudarte con mas presición. ¿Puedes describirme la situación o modalidad legal que quieres consultar?")
             contexto_usuario[user_id] = pregunta  # guarda como posible inicio de hilo
             return
 
@@ -86,7 +86,7 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         respuesta = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Eres un asistente legal experto en procedimientos administrativos."},
+                {"role": "system", "content": "Eres un asistente legal experto en procedimientos administrativos, estas asesorando a un agente de la guardia nacional bolivariana que seguramente tenga dudas sobre como proceder, es de vital importancia que consigas ubicarte en situacion, modalidad o incidencia para poder responder con la información sobre el procedimiento y las bases legales y ademas ofrecer documentos que puedan ser de utilidad."},
                 {"role": "user", "content": prompt}
             ]
         )
