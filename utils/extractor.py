@@ -122,20 +122,24 @@ def buscar_por_situacion(pregunta, base_tablas):
     return None
 import json
 
-def cargar_datos_json_desde_txt(carpeta="documentos"):
-    datos_json = []
-    for root, _, files in os.walk(carpeta):
-        for file in files:
-            if file.endswith(".txt"):
-                path = os.path.join(root, file)
-                try:
-                    with open(path, "r", encoding="utf-8") as f:
-                        contenido = f.read()
-                        datos = json.loads(contenido)
-                        datos_json.extend(datos if isinstance(datos, list) else [datos])
-                except Exception as e:
-                    print(f"Error al leer {file}: {e}")
-    return datos_json
+import json
+
+def cargar_json_desde_txt(carpeta):
+    datos = []
+    for file in os.listdir(carpeta):
+        if file.endswith(".txt"):
+            path = os.path.join(carpeta, file)
+            try:
+                with open(path, encoding="utf-8") as f:
+                    contenido = json.load(f)
+                    if isinstance(contenido, list):
+                        datos.extend(contenido)
+                    else:
+                        datos.append(contenido)
+            except Exception as e:
+                logging.warning(f"Error cargando {file}: {e}")
+    return datos
+
 
 
 def buscar_en_json(pregunta, datos_json):
