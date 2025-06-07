@@ -57,10 +57,12 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         mejores.sort(reverse=True, key=lambda x: x[0])
         if mejores:
             item = mejores[0][1]
-            respuesta_json = f"Situación: {item.get('situacion')}
-Modalidad: {item.get('modalidad')}
-Procedimiento: {item.get('procedimiento')}
-Referencia Legal: {item.get('referencia_legal', 'No especificada')}"
+            respuesta_json = (
+                f"Situación: {item.get('situacion')}\n"
+                f"Incidencias/Modalidad: {item.get('modalidad')}\n"
+                f"Procedimiento: {item.get('procedimiento')}\n"
+                f"Referencia Legal: {item.get('referencia_legal')}"
+            )
             await update.message.reply_text(respuesta_json)
             return
 
