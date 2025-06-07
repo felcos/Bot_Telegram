@@ -79,8 +79,7 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         prompt = (
             f"Responde como asesor legal en base a los siguientes manuales técnicos. "
             f"La conversación anterior fue: {contexto_usuario[user_id]}\n\n"
-            f"Documentación:
-{contexto}\n\n"
+            f"Documentación:{contexto}\n\n"
             f"Nueva pregunta del usuario: {pregunta}"
         )
 
