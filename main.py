@@ -1,46 +1,47 @@
 import os
 import logging
-import fitz  # PyMuPDF
+from dotenv import load_dotenv
 import openai
-import telegram
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 from utils.extractor import procesar_documentos, buscar_en_tablas, detectar_plantilla
-from dotenv import load_dotenv
 
-# Configura logs
+# Configurar logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-# Carga variables de entorno
+# Cargar variables de entorno
 load_dotenv()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
-# Inicializa cliente OpenAI
+# Inicializar cliente OpenAI
 client = openai.OpenAI(api_key=OPENAI_KEY)
 
-# Procesa documentos al iniciar (una sola vez)
-documentos = procesar_documentos("documentos")
+# Procesar documentos al arrancar
+documentos_texto, documentos_tablas = procesar_documentos("documentos")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hola, soy un bot especializado en asesoría legal. Puedes hacerme preguntas sobre aduanas, tributos internos, criptoactivos o legitimación de capitales.")
+    await update.message.reply_text(
+        "Hola, soy un bot especializado en asesoría legal. Puedes hacerme preguntas sobre aduanas, tributos internos, criptoactivos o legitimación de capitales."
+    )
 
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
     try:
-        # Paso 1: Buscar en tablas de los documentos cargados
-        resultado_tabla = buscar_en_tablas(documentos, pregunta)
+        # Paso 1: Buscar coincidencias en tablas
+        resultado_tabla = buscar_en_tablas(documentos_tablas, pregunta)
         if resultado_tabla:
             await update.message.reply_text(resultado_tabla)
             return
 
-        # Paso 2: Preguntar al modelo 4o con contexto de los documentos
-        prompt = """Responde como asesor legal en base a los siguientes manuales técnicos. Si detectas que el usuario puede necesitar una plantilla o formulario, indícalo claramente.
-        
-"""
-        for doc in documentos.values():
-            prompt += doc[:1000] + "\n"  # recorta para no exceder tokens
-        prompt += f"\nPregunta del usuario: {pregunta}"
+        # Paso 2: Consultar modelo con contexto de documentos
+        contexto = "\n".join([texto[:1000] for _, texto in documentos_texto])
+        prompt = (
+            "Responde como asesor legal en base a los siguientes manuales técnicos. "
+            "Si detectas que el usuario puede necesitar una plantilla o formulario, indícalo claramente.\n\n"
+            + contexto +
+            f"\n\nPregunta del usuario: {pregunta}"
+        )
 
         respuesta = client.chat.completions.create(
             model="gpt-4o",
@@ -51,7 +52,7 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         texto_respuesta = respuesta.choices[0].message.content.strip()
 
-        # Paso 3: Si se detecta plantilla, ofrecer archivo
+        # Paso 3: Verificar si se requiere plantilla
         plantilla = detectar_plantilla(pregunta)
         if plantilla:
             ruta = os.path.join("templates", plantilla)
@@ -62,9 +63,9 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(texto_respuesta)
 
     except openai.RateLimitError:
-        await update.message.reply_text("Has superado el límite de uso de OpenAI. Intenta más tarde.")
+        await update.message.reply_text("Has superado el límite de uso de OpenAI. Intenta nuevamente más tarde.")
     except Exception as e:
-        logging.error(f"Error al procesar pregunta: {e}")
+        logging.exception("Error al procesar la pregunta")
         await update.message.reply_text("Lo siento, ha ocurrido un error procesando tu solicitud.")
 
 if __name__ == "__main__":
