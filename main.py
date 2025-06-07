@@ -60,12 +60,9 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
             item = mejores[0][1]
             contexto_usuario[user_id] = item.get('situacion') or pregunta
             respuesta_json = (
-                f"Situación: {item.get('situacion')}
-"
-                f"Incidencias/Modalidad: {item.get('modalidad')}
-"
-                f"Procedimiento: {item.get('procedimiento')}
-"
+                f"Situación: {item.get('situacion')}"
+                f"Incidencias/Modalidad: {item.get('modalidad')}"
+                f"Procedimiento: {item.get('procedimiento')}"
                 f"Referencia Legal: {item.get('referencia_legal')}"
             )
             await update.message.reply_text(respuesta_json)
