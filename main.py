@@ -57,7 +57,8 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if plantilla:
             ruta = os.path.join("templates", plantilla)
             if os.path.exists(ruta):
-                await update.message.reply_document(document=open(ruta, "rb"), filename=plantilla, caption=texto_respuesta)
+                await update.message.reply_document(document=open(ruta, "rb"), filename=plantilla, caption="Aquí tienes el archivo solicitado.")
+                await update.message.reply_text(texto_respuesta)
                 return
 
         await update.message.reply_text(texto_respuesta)
