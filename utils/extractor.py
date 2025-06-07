@@ -88,3 +88,26 @@ def detectar_plantilla(pregunta):
             posibles.append((simil, file))
     posibles.sort(reverse=True)
     return posibles[0][1] if posibles else None
+
+def buscar_por_situacion(pregunta, base_tablas):
+    """
+    Busca una coincidencia exacta (o casi exacta) en la columna 'situación'.
+    Si encuentra, devuelve una respuesta con el resto de columnas.
+    """
+    mejores = []
+    for fila in base_tablas:
+        situacion = fila.get("situación", "").lower().strip()
+        simil = difflib.SequenceMatcher(None, pregunta.lower(), situacion).ratio()
+        if simil > 0.6:  # puedes ajustar el umbral si es necesario
+            mejores.append((simil, fila))
+
+    mejores.sort(reverse=True, key=lambda x: x[0])
+    if mejores:
+        mejor = mejores[0][1]
+        return (
+            f"Situación: {mejor['situación']}\n"
+            f"Modalidad/Incidencias: {mejor['incidencias']}\n"
+            f"Procedimiento: {mejor['procedimiento']}\n"
+            f"Referencia Legal: {mejor['referencia legal 2022']}"
+        )
+    return None

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import openai
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-from utils.extractor import procesar_documentos, buscar_en_tablas, detectar_plantilla
+from utils.extractor import procesar_documentos, buscar_en_tablas, detectar_plantilla, buscar_por_situacion
 
 # Configurar logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -22,19 +22,25 @@ documentos_texto, documentos_tablas = procesar_documentos("documentos")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Hola, soy un bot especializado en asesoría legal. Puedes hacerme preguntas sobre aduanas, tributos internos, criptoactivos o legitimación de capitales."
+        "Hola, soy un bot especializado en asesoría legal para la Guardia Nacional. Puedes hacerme preguntas sobre aduanas, tributos internos, criptoactivos o legitimación de capitales."
     )
 
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
     try:
-        # Paso 1: Buscar coincidencias en tablas
-        resultado_tabla = buscar_en_tablas(pregunta,documentos_tablas)
+        # Paso 1: Buscar por coincidencia exacta en columna 'situación'
+        resultado_situacion = buscar_por_situacion(pregunta, documentos_tablas)
+        if resultado_situacion:
+            await update.message.reply_text(resultado_situacion)
+            return
+
+        # Paso 2: Buscar coincidencias en otras columnas
+        resultado_tabla = buscar_en_tablas(pregunta, documentos_tablas)
         if resultado_tabla:
             await update.message.reply_text(resultado_tabla)
             return
 
-        # Paso 2: Consultar modelo con contexto de documentos
+        # Paso 3: Consultar modelo con contexto de documentos
         contexto = "\n".join([texto[:1000] for _, texto in documentos_texto])
         prompt = (
             "Responde como asesor legal en base a los siguientes manuales técnicos. "
@@ -46,13 +52,13 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         respuesta = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Eres un asistente legal experto en procedimientos administrativos."},
+                {"role": "system", "content": "Eres un asistente legal experto en procedimientos administrativos para la Guardia Nacional."},
                 {"role": "user", "content": prompt}
             ]
         )
         texto_respuesta = respuesta.choices[0].message.content.strip()
 
-        # Paso 3: Verificar si se requiere plantilla
+        # Paso 4: Verificar si se requiere plantilla
         plantilla = detectar_plantilla(pregunta)
         if plantilla:
             ruta = os.path.join("templates", plantilla)
@@ -74,8 +80,7 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
     app.run_webhook(
-    listen="0.0.0.0",
-    port=int(os.environ.get("PORT", 8443)),
-    webhook_url="https://bot-telegram-yzpk.onrender.com"
-)
-
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 8443)),
+        webhook_url="https://bot-telegram-yzpk.onrender.com"
+    )
