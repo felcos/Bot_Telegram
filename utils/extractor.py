@@ -43,11 +43,11 @@ def extraer_tablas_docx(path):
     return resultados
 
 # --- Carga inicial de todos los documentos ---
-def procesar_documentos():
+def procesar_documentos(ruta_carpeta):
     base_textos = []
     base_tablas = []
 
-    for root, _, files in os.walk(BASE_DIR):
+    for root, _, files in os.walk(ruta_carpeta):
         for file in files:
             path = os.path.join(root, file)
             if file.endswith(".pdf"):
@@ -60,6 +60,7 @@ def procesar_documentos():
                 base_tablas.extend(tablas)
 
     return base_textos, base_tablas
+
 
 # --- Respuesta desde tablas ---
 def buscar_en_tablas(pregunta, base_tablas):
