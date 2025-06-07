@@ -1,75 +1,67 @@
 import os
 import logging
-import fitz  # PyMuPDF
-from telegram import Update
+import fitz  # PyMuPDF para leer PDFs
+import docx
+from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from openai import OpenAI, APIError, RateLimitError
 from dotenv import load_dotenv
+from utils.extractor import procesar_documentos, buscar_en_tablas, detectar_plantilla
 
-# Cargar variables de entorno
 load_dotenv()
+
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Inicializar cliente OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
+logging.basicConfig(level=logging.INFO)
 
-# Cargar texto desde PDF
-def cargar_pdf(ruta):
-    texto = ""
-    with fitz.open(ruta) as pdf:
-        for pagina in pdf:
-            texto += pagina.get_text()
-    return texto
+# Cargamos documentos al iniciar
+base_conocimiento = procesar_documentos("documentos")
 
-# Detectar si la pregunta requiere plantilla
-def detectar_plantilla(pregunta):
-    palabras_clave = {
-        "informe técnico": "plantillas/informe_tecnico.pdf",
-        "formulario de reclamación": "plantillas/formulario_reclamacion.pdf",
-        "modelo de contrato": "plantillas/modelo_contrato.pdf",
-        # Añadir más como quieras
-    }
-    for clave, ruta in palabras_clave.items():
-        if clave.lower() in pregunta.lower():
-            return ruta, clave
-    return None, None
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hola. Soy un asistente legal. Puedes describirme una situación o problema legal y te diré qué procedimiento o referencia legal se aplica. Si necesitas una plantilla, también te la puedo proporcionar.")
 
-# Buscar respuesta con GPT-4o
-def buscar_respuesta(pregunta, contexto):
-    try:
-        respuesta = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "Eres un asistente que responde con base en un documento PDF proporcionado."},
-                {"role": "user", "content": f"Pregunta: {pregunta}\n\nTexto de referencia:\n{contexto}"}
-            ]
-        )
-        return respuesta.choices[0].message.content.strip()
-    except RateLimitError:
-        return "❗ Has superado el límite de uso de OpenAI. Intenta más tarde."
-    except APIError as e:
-        return f"❗ Error de la API de OpenAI: {str(e)}"
-    except Exception as e:
-        return f"❗ Error inesperado: {str(e)}"
-
-# Manejador de mensajes
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
-    texto_pdf = cargar_pdf("documentos/datos_1.pdf")
-    respuesta = buscar_respuesta(pregunta, texto_pdf)
 
-    # Enviar respuesta
-    await update.message.reply_text(respuesta)
+    try:
+        # Buscar coincidencias en las tablas
+        respuesta = buscar_en_tablas(base_conocimiento, pregunta)
+        if not respuesta:
+            respuesta = preguntar_openai(pregunta)
 
-    # Revisar si necesita una plantilla
-    ruta, nombre = detectar_plantilla(pregunta)
-    if ruta and os.path.exists(ruta):
-        await update.message.reply_document(document=open(ruta, "rb"), filename=os.path.basename(ruta), caption=f"Aquí tienes la plantilla de {nombre} 📄")
+        await update.message.reply_text(respuesta)
 
-# Iniciar bot
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+        plantilla = detectar_plantilla(base_conocimiento, pregunta)
+        if plantilla:
+            ruta_archivo = f"templates/{plantilla}"
+            if os.path.exists(ruta_archivo):
+                await update.message.reply_document(InputFile(ruta_archivo))
+            else:
+                await update.message.reply_text("No encontré la plantilla, pero parece que podrías necesitarla.")
+
+    except RateLimitError:
+        await update.message.reply_text("He alcanzado el límite de uso de OpenAI. Inténtalo más tarde.")
+    except APIError as e:
+        await update.message.reply_text("Error al consultar OpenAI.")
+        logging.error(f"Error API: {e}")
+    except Exception as e:
+        await update.message.reply_text("Ocurrió un error inesperado.")
+        logging.exception("Error general")
+
+def preguntar_openai(pregunta):
+    respuesta = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "Eres un experto legal en procedimientos aduaneros, tributarios, de criptoactivos y legitimación de capitales. Responde usando solo los manuales proporcionados."},
+            {"role": "user", "content": pregunta},
+        ]
+    )
+    return respuesta.choices[0].message.content.strip()
+
+if __name__ == '__main__':
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
     app.run_polling()
