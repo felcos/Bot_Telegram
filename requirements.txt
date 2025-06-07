@@ -2,3 +2,4 @@ python-telegram-bot==20.7
 PyMuPDF==1.24.3
 openai==1.33.0
 flask==3.0.3
+python-dotenv
