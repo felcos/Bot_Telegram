@@ -155,3 +155,72 @@ def buscar_en_json(pregunta, datos_json):
         mejor = mejores[0][1]
         return f"Situación: {mejor.get('situacion', '')}\nModalidad: {mejor.get('modalidad', '')}\nProcedimiento: {mejor.get('procedimiento', '')}\nReferencia Legal: {mejor.get('referencia_legal', '')}"
     return None
+
+
+async def documentar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    mensaje = update.message.text
+    tema = mensaje.replace("documentar", "", 1).strip().lower()
+
+    ejemplos = {
+        "inspección": [
+            "**Acta de Inspección**",
+            "Fecha: ____________",
+            "Lugar de la inspección: ____________",
+            "Unidad actuante: ____________",
+            "Funcionario responsable: ____________",
+            "Descripción de los hechos: ____________",
+            "Resultado de la inspección: ____________",
+            "Observaciones: ____________"
+        ],
+        "detención": [
+            "**Acta de Detención**",
+            "Fecha y hora: ____________",
+            "Lugar de los hechos: ____________",
+            "Nombre del detenido: ____________",
+            "Cédula de identidad: ____________",
+            "Motivo de la detención: ____________",
+            "Evidencias incautadas: ____________",
+            "Funcionarios actuantes: ____________"
+        ],
+        "informe": [
+            "**Informe Operativo**",
+            "Fecha del informe: ____________",
+            "Unidad responsable: ____________",
+            "Nombre del redactor: ____________",
+            "Resumen de la operación: ____________",
+            "Resultados obtenidos: ____________",
+            "Recomendaciones: ____________"
+        ],
+        "acta": [
+            "**Acta General**",
+            "Fecha: ____________",
+            "Lugar: ____________",
+            "Unidad actuante: ____________",
+            "Resumen de los hechos: ____________",
+            "Acciones tomadas: ____________",
+            "Firmas de los responsables: ____________"
+        ]
+    }
+
+    # Detectar tipo sugerido
+    for clave, campos in ejemplos.items():
+        if clave in tema:
+            await update.message.reply_text(
+                "\n".join(campos),
+                parse_mode="Markdown"
+            )
+            return
+
+    # Si no se encuentra un caso claro, generar una estructura genérica
+    estructura_generica = [
+        f"**Documento: {tema.title()}**",
+        "Fecha: ____________",
+        "Lugar: ____________",
+        "Unidad o funcionario responsable: ____________",
+        "Descripción detallada: ____________",
+        "Observaciones: ____________"
+    ]
+    await update.message.reply_text(
+        "\n".join(estructura_generica),
+        parse_mode="Markdown"
+    )
