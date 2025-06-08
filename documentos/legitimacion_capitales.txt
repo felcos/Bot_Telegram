@@ -1,28 +1,28 @@
 [
   {
     "origen": "capitales",
-    "situacion": "Investigación por presunción del Delito de Legitimación de Capitales",
+    "situacion": "A. Investigación por presunción del Delito de Legitimación de Capitales",
     "modalidad": "La conversión, transferencia o traslado por cualquier medio de bienes, capitales, haberes, beneficios o excedentes de origen ilícito.",
     "procedimiento": "1.1. Haber recibido una Orden de Inicio de Investigación del Ministerio Público.\n1.2. Proceder con la diligencias ordenadas por el Ministerio Público.\n1.3. Realizar una investigación e identificación patrimonial.\n1.4. Solicitar información a los órganos de control, (Art. 7 de la LOCDOFT).\n1.5. Análisis y procesamiento de la información recibida de los órganos de control.\n1.6. Remisión de informe al Ministerio Público, de las resultas obtenidas de la investigación realizada, haciendo énfasis en la fuente con vocación probatoria identificada.",
     "referencia_legal": "a. CRBV, Art: 328 y 329.\nb. LCFANB, Art: 04 y 73.\nc. LOCDOFT, Art: 26 y 35.\nd. COPP, Art: 08, 10, 113, 114, 115, 116, 127, 194, 196, 199, 234, 235 y 236.\ne. LOSPI, Art: 12, 13 y 14."
   },
   {
     "origen": "capitales",
-    "situacion": "Investigación por presunción del Delito de Legitimación de Capitales",
+    "situacion": "A. Investigación por presunción del Delito de Legitimación de Capitales",
     "modalidad": "El ocultamiento, encubrimiento o simulación de la naturaleza, origen, ubicación, disposición, destino, movimiento o propiedad de bienes o del legítimo derecho de éstos.",
     "procedimiento": "2.1. Haber recibido una Orden de Inicio de Investigación por parte del Ministerio Público.\n2.2. Proceder con la diligencias ordenadas por el Ministerio Público.\n2.3. Realizar una investigación e identificación patrimonial.\n2.4. Solicitar información a los órganos de control (Art. 7 de la LOCDOFT).\n2.5. Análisis y procesamiento de la información recibida de los órganos de control.\n2.6. Remisión de informe de las resultas obtenidas de la investigación realizada al Ministerio Público, haciendo énfasis en la fuente con vocación probatoria identificada.",
     "referencia_legal": "a. CRBV, Art: 328 y 329.\nb. LCFANB, Art: 04 y 73.\nc. LOCDOFT, Art: 26 y 35.\nd. COPP, Art: 08, 10, 113, 114, 115, 116, 127, 194, 196, 199, 234, 235 y 236.\ne. LOSPI, Art: 12, 13 y 14."
   },
   {
     "origen": "capitales",
-    "situacion": "Investigación por presunción del Delito de Legitimación de Capitales",
+    "situacion": "A. Investigación por presunción del Delito de Legitimación de Capitales",
     "modalidad": "La adquisición, posesión o la utilización de bienes producto de algún delito.",
     "procedimiento": "3.1. Haber recibido una Orden de Inicio de Investigación por parte del Ministerio Público.\n3.2. Proceder con la diligencias ordenadas por el Ministerio Público.\n3.3. Realizar una investigación e identificación patrimonial.\n3.4. Solicitar información a los órganos de control (Art. 7 de la LOCDOFT).\n3.5. Análisis y procesamiento de la información recibida de los órganos de control.\n3.6. Remisión de informe de las resultas obtenidas de la investigación realizada al Ministerio Público, haciendo énfasis en la fuente con vocación probatoria identificada.",
     "referencia_legal": "a. CRBV, Art: 328 y 329.\nb. LCFANB, Art: 04 y 73.\nc. LOCDOFT, Art: 26 y 35.\nd. COPP, Art: 08, 10, 113, 114, 115, 116, 127, 194, 196, 199, 234, 235 y 236.\ne. LOSPI, Art: 12, 13 y 14."
   },
   {
     "origen": "capitales",
-    "situacion": "Investigación por presunción del Delito de Legitimación de Capitales",
+    "situacion": "A. Investigación por presunción del Delito de Legitimación de Capitales",
     "modalidad": "El resguardo, inversión, transformación, custodia o administración de bienes o capitales provenientes de actividades ilícitas.",
     "procedimiento": "4.1. Haber recibido una Orden de Inicio de Investigación por parte del Ministerio Público.\n4.2. Proceder con la diligencias ordenadas por el Ministerio Público.\n4.3. Realizar una investigación e identificación patrimonial.\n4.4. Solicitar información a los órganos de control (Art. 7 de la LOCDOFT).\n4.5. Análisis y procesamiento de la información recibida de los órganos de control.\n4.6. Remisión de informe de las resultas obtenidas de la investigación realizada al Ministerio Público, haciendo énfasis en la fuente con vocación probatoria identificada.",
     "referencia_legal": "a. CRBV, Art: 328 y 329.\nb. LCFANB, Art: 04 y 73.\nc. LOCDOFT, Art: 26 y 35.\nd. COPP, Art: 08, 10, 113, 114, 115, 116, 127, 194, 196, 199, 234, 235 y 236.\ne. LOSPI, Art: 12, 13 y 14."
