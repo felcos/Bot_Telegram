@@ -372,6 +372,12 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             item.get('origen', '').lower() == tema
         ):
             texto = (
+                f"📘 *Consulta guiada completada*\n"
+                f"────────────────────────────\n"
+                f"🗂 *Tema:* {tema.capitalize()}\n"
+                f"📌 *Situación:* {situacion}\n"
+                f"🧷 *Modalidad / Incidencia:* {modalidad}\n"
+                f"────────────────────────────\n"
                 f"✅ *Procedimiento:*\n{item.get('procedimiento', 'No disponible')}\n\n"
                 f"📜 *Referencia Legal:*\n{item.get('referencia_legal', 'No disponible')}"
             )
@@ -382,7 +388,7 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not encontrado:
         await query.edit_message_text("⚠️ No se encontró información detallada para esa combinación.")
 
-    # En ambos casos, ofrecer nueva consulta
+    # Mensaje para continuar
     await query.message.reply_text(
         "¿Deseas realizar otra consulta?\n\n"
         "🟢 Escribe `consulta` para iniciar una *consulta guiada*.\n"
@@ -391,6 +397,7 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     return ConversationHandler.END
+
 
 
 if __name__ == "__main__":
