@@ -1,0 +1,100 @@
+[
+    {
+        "origen": "aduana",
+        "situacion": "A.   Control de Vehículos porteadores.",
+        "incidencia": "1.   Practicar requisas a Vehículos porteadores de Mercancías de origen y/o procedencias extranjeras.",
+        "procedimiento": "1.1.   Después de la correspondiente inspección sanitaria, esta será visitado por la autoridad marítima y aduanera respectiva. \n1.2.   Solicitar autorización al gerente de la aduana para ejecutar las requisas.\n1.3.   Realizar la requisa del vehículo porteador, acompañado de un representante de la agencia naviera y de un oficial del vehículo porteador. \n1.4.   Efectuar la inspección de los efectos que se encuentran en el vehículo, con base a la documentación presentada. \n1.5.   Elaborar el acta de la requisa dejando constancia de la actividad practicada.\n1.6.   Informar al gerente de la aduana sobre el resultado de la inspección y enviar una copia del acta elaborada.",
+        "referencia_legal": "a) CRBV: Arts. 328, 329.\nb) LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc) LOA: Art. 7 # 3. Arts. 16 y 192.\nd) RLOA: Arts. 60, 61 y 65.\ne) RRRA: Arts. 16,17,18 y 19.\nf) RRDBAMR: Arts. 1 y 2."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "B.   Control de mercancías y personas que llegan al país por puertos y aeropuertos.",
+        "incidencia": "1.   No presentar los documentos exigidos durante la ejecución de la visita de entrada a las naves y / o aeronaves que llegan a los muelles o pistas de aterrizaje ubicados en la zona primaria.",
+        "procedimiento": "1.1.   Elaborar el acta de retención debidamente motivada a los efectos y mercancías.\n1.2.   Elaborar el acta de las actuaciones realizadas.\n1.3.   Remitir las actuaciones a la aduana correspondiente.\n1.4.   Dejar copia de las actuaciones realizadas.",
+        "referencia_legal": "a) CRBV: Arts. 328, 329.\nb) LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc) LOA: Art. 7 # 3. Arts. 16 y 192.\nd) RLOA: Arts. 60, 61 y 65.\ne) RRRA: Art. 30"
+    },
+    {
+        "origen": "aduana",
+        "situacion": "B.   Control de mercancías y personas que llegan al país por puertos y aeropuertos.",
+        "incidencia": "2.   Existencia de efectos ocultos en la nave o aeronave no declarados a las autoridades aduaneras.",
+        "procedimiento": "2.1.   Elaborar el acta de retención debidamente motivada a los efectos y mercancías.\n2.2.   Elaborar el acta de las actuaciones realizadas.\n2.3.   Remitir las actuaciones a la aduana correspondiente.\n2.4.   Dejar copia de las actuaciones realizadas.",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Art. 7 # 3. Arts. 16 y 192.\nd)   RLOA: Arts. 60, 61 y 65.\ne)   RRRA: Arts. 16,17,18,19 y 21."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "B.   Control de mercancías y personas que llegan al país por puertos y aeropuertos.",
+        "incidencia": "3.   Chequeo de aeronaves extranjeras que arriben por aeropuertos habilitados.",
+        "procedimiento": "3.1.   Al momento del arribo deberá solicitar al capitán de nave los siguientes documentos:\n3.1.1.   Certificado de aeronavegabilidad. \n3.1.2.   Certificación de la matricula.\n3.1.3.   Licencia y Certificado médico de los pilotos (deben concordar con la matricula y tipo de nave).\n3.1.4.   Póliza de seguro de la aeronave.\n3.1.5.   Permiso de sobrevuelo otorgado por la autoridad aeronáutica INAC.\n3.1.6.   Formato de liquidación de servicio de radio ayuda, balizaje, entre otros.\n3.1.7.   Manual de vuelo.\n3.1.8.   Permiso para aeronaves extranjeras, para entrar, transitar o salir del territorio nacional otorgado por el INAC.\n3.2.   Verificar que las posibles mercancías aduaneras sean sometidas a potestad aduanera.\n3.3.   Verificar que las provisiones a bordo de la aeronave permanezcan en la zona primaria.\n3.4.   Constatar y supervisar a que régimen fue sometida la aeronave ante las autoridades aduaneras. ",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Arts. 6, 7, 16 y 192.\nd)   LAC: Arts. 1, 2, 20, 58, 72, 73 y 125.\ne)   RLOA: Arts. 60, 61 y 459.\nf)   RRRA: Arts. 43, 44 y 45."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "B.   Control de mercancías y personas que llegan al país por puertos y aeropuertos.",
+        "incidencia": "4.   Chequeo de aeronaves extranjeras que arriben por aeropuertos o pistas no autorizadas.",
+        "procedimiento": "4.1.   Corroborar la causa del arribo.\n4.2.   Solicitar los siguientes documentos:\n4.2.1.   Certificado de aeronavegabilidad. \n4.2.2.   Certificación de la matricula.\n4.2.3.   Licencia y Certificado médico de los pilotos (deben concordar con la matricula y tipo de nave).\n4.2.4.   Póliza de seguro de la aeronave.\n4.2.5.   Permiso de sobrevuelo otorgado por la autoridad aeronáutica INAC.\n4.2.6.   Formato de liquidación de servicio de radio ayuda, balizaje, entre otros.\n4.2.7.   Manual de vuelo.\n4.2.8.   Permiso para aeronaves extranjeras, para entrar, transitar o salir del territorio nacional otorgado por el INAC.\n4.3.   Verificar la existencia de mercancía de procedencia extranjera.\n4.4.   Hacerse acompañar de dos testigos plenamente identificados.\n4.5.   Detener preventivamente las personas, aeronave y mercancías involucradas.\n4.6.   Realizar acta de notificación de derechos de las personas detenidas preventivamente.\n4.7.   Realizar la identificación de las personas, aeronave y mercancías involucradas.\n4.8.   Efectuar reseña fotográfica del procedimiento efectuado.\n4.9.   Notificar vía telefónica al Fiscal del Ministerio Público.\n4.10.   Redactar y remitir a la Fiscalía del Ministerio Publico las actuaciones realizadas.",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Arts. 7, 13, 16, 169, 170 y 192.\nd)   LAC: Arts. 1, 2, 20, 72, 73 y 125.\ne)   LSDC: Arts. 1, 2, 3, 5, 6, 7 Y 19.\nf)   LOSPI: Art. 24 # 1 Art. 25 # 13 \ng)   COPP: Arts. 113, 114, 191 y 192.\nh)   RLOA: Arts. 60, 61 y 459.\ni)   RRRA: Arts. 43, 44 y 45."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "B.   Control de mercancías y personas que llegan al país por puertos y aeropuertos.",
+        "incidencia": "5.   Chequeo de embarcaciones extranjeras (que no sean trasportistas de carga) que arriben por puertos o marinas habilitadas.",
+        "procedimiento": "5.1.   Solicitar los siguientes documentos:\n5.1.1.      Licencia o patente de navegación.\n5.1.2.      Certificado internacional de arqueo y franco bordo. \n5.1.3.      Certificado de tripulación mínima.\n5.1.4.      Certificado internacional de contaminación por hidrocarburos.\n5.1.5.      Libro de registro de hidrocarburos.\n5.1.6.      Lista de pasajeros (de ser necesario).\n5.1.7.      Libro diario de navegación.\n5.1.8.      Inscripción de registro naval. (de ser necesario).\n5.2.   Verificar la existencia de mercancía de procedencia extranjera sea sometida a potestad aduanera.\n5.3.   Verificar que las provisiones a bordo de la embarcación permanezcan en la zona primaria.\n5.4.   Constatar y supervisar a que régimen fue sometida la embarcación ante la autoridad aduanera.\n5.5.   Certificado de navegabilidad.\n5.6.   Arribo de buque.\n5.7.   Inspección Sanitaria.\n5.8.   Rol de Tripulantes.",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Arts. 6, 7, 13, 16, y 192.\nd)   LGMAC: Arts: 1, 2, 4, 7, 23, 24, 49, 69 y 70. \ne)   LSDC: Arts. 1, 2, 3, 5, 6, 7 Y 19.\nf)   LN: Arts. 20, 35, 36, 43, 44, 48 y 54.\ng)   RLOA: Arts. 60, 61 y 459.\nh)   RRRA: Arts. 43, 44 y 45."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "B.   Control de mercancías y personas que llegan al país por puertos y aeropuertos.",
+        "incidencia": "6.   Chequeo de embarcaciones extranjeras que arriben por puertos no habilitados.",
+        "procedimiento": "6.1.   Corroborar la causa del arribo.\n6.2.   Solicitar los siguientes documentos:\n6.2.1.   Certificado de aeronavegabilidad. \n6.2.2.   Certificación de la matricula.\n6.2.3.   Licencia y Certificado médico de los pilotos (deben concordar con la matricula y tipo de nave).\n6.2.4.   Póliza de seguro de la aeronave.\n6.2.5.   Permiso de sobrevuelo otorgado por la autoridad aeronáutica INAC.\n6.2.6.   Formato de liquidación de servicio de radio ayuda, balizaje, entre otros.\n6.2.7.   Manual de vuelo.\n6.2.8.   Permiso para aeronaves extranjeras, para entrar, transitar o salir del territorio nacional otorgado por el INAC.\n6.3.   Verificar la existencia de mercancía de procedencia extranjera.\n6.4.   Hacerse acompañar de dos testigos plenamente identificados.\n6.5.   Detener preventivamente las personas, aeronave y mercancías involucradas.\n6.6.   Realizar acta de notificación de derechos de las personas detenidas preventivamente.\n6.7.   Realizar la identificación de las personas, aeronave y mercancías involucradas.\n6.8.   Efectuar reseña fotográfica del procedimiento efectuado.\n6.9.   Notificar vía telefónica al Fiscal del Ministerio Público.\n6.10.      Redactar y remitir a la Fiscalía del Ministerio Publico las actuaciones realizadas.\n6.11.      Notificar a la administración aduanera.",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Arts. 6, 7, 13, 16, y 192.\nj)   LAC: Arts. 1, 2, 20, 72, 73 y 125.\nk)   LSDC: Arts. 1, 2, 3, 5, 6, 7 Y 19.\nl)   LOSPI: Art. 24 # 1 Art. 25 # 13\nd)   LGMAC: Arts: 1, 2, 4, 7, 23, 24, 49, 69 y 70. \ne)   LN: Arts. 20, 35, 36, 43, 44, 48 y 54.\nm)   COPP: Arts. 113, 114, 191 y 192.\nf)   RLOA: Arts. 60, 61 y 459.\ng)   RRRA: Arts. 43, 44 y 45."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "C.   Visita de entrada de buques naves o aeronaves.",
+        "incidencia": "1.   Visita de naves buques o aeronaves.",
+        "procedimiento": "1.1.   Al momento de la llegada del buque, nave o aeronave, se deberá proceder a la entrada del vehículo porteador junto con los funcionarios designados por ley. (Sanidad, Seniat, Capitanía de puertos y GNB Resguardo y Antidrogas).\n1.2.   Solicitar y cotejar la copia de los siguientes documentos:\n1.2.1.            Lista de tripulación.\n1.2.2.            Provisiones a bordo. (alimentos y repuestos)\n1.2.3.            Lista de pasajeros.\n1.2.4.            Lista de útiles personales.\n1.2.5.            Polizontes si los hay.\n1.3.   Establecer el servicio de portalón para verificar la entrada y salida de personas o mercancías portuarias de la nave o aeronave.\n1.4.   Colocar los sellos de prohibido vender a bordo en las bodegas y depósitos de buques, naves o aeronaves.\n1.5.   Registrar los datos necesarios en los libros destinados a tal efecto para llevar el control de la inspección y actuaciones realizadas.\n1.6.   Elaborar el acta de inspección.\n1.7.   Establecer la custodia a bordo (servicio de portalón).\n1.8.   Verificar el buen estado de los sellos.",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Arts. 6, 7, 13, 16, y 192.\nn)   LAC: Arts. 1, 2, 20, 72, 73 y 125.\nd)   LGMAC:Arts: 1, 2, 4, 7, 23, 24, 49, 69 y 70. \ne)   LN: Arts. 20, 35, 36, 43, 44, 48 y 54.\nf)    RLOA: Arts. 60, 61 y 459.\ng)   RRRA: Arts. 13, 16, 17, 18, 19, 20 y 30.\nh)   RRDBAMR: Arts. 1 y 2. "
+    },
+    {
+        "origen": "aduana",
+        "situacion": "C.   Visita de entrada de buques naves o aeronaves.",
+        "incidencia": "2.   Existencia de indicios o denuncias de infracciones a las leyes fiscales.",
+        "procedimiento": "2.1.   Solicitar autorización al gerente de la aduana para participar la requisa de la nave, buque o aeronave en compañía d ellos funcionarios designados por la ley.\n2.2.   Solicitar y cotejar la copia de los siguientes documentos:\n2.2.1. Lista de tripulación.\n2.2.2. Provisiones a bordo. (alimentos y repuestos)\n2.2.3. Lista de pasajeros.\n2.2.4. Lista de útiles personales.\n2.2.5. Polizontes si los hay.\n2.3.   Registrar los datos necesarios en los libros destinados.\n2.4.   Establecer la vigilancia fiscal a bordo.\n2.5.   Elaborar acta de inspección donde se establezcan las irregularidades detectadas.\n2.6.   Remitir el acta a la aduana correspondiente.",
+        "referencia_legal": "a)   CRBV: Arts. 328, 329.\nb)   LCFANB: Art. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: Arts. 6, 7, 10, 11, 13, 16, y 192.\nd)   LAC: Arts. 1, 2, 20, 72, 73 y 125.\ne)   LGMAC:Arts: 1, 2, 4, 7, 23, 24, 49, 69 y 70. \nf)   LN: Arts. 20, 35, 36, 43, 44, 48 y 54.\na)   LOPA:Art. 48.\ng)   RLOA:Arts. 60, 61 y 459.\nh)   RRRA:Arts. 1, 2, 3 , 16, 17, 18, 19 y 20.\ni)   RRDBAMR:Arts. 1 y 2. "
+    },
+    {
+        "origen": "aduana",
+        "situacion": "C.   Visita de entrada de buques naves o aeronaves.",
+        "incidencia": "3.   Verificación de vehículos de transporte marítimo, aéreo o terrestre en servicio de cabotaje.",
+        "procedimiento": "3.1.   Solicitar la documentación del vehículo de transporte (determinar que sea de matrícula nacional o autorización del INTTT).\n3.2.   Solicitar la autorización de la administración aduanera para efectuar el servicio.\n3.3.   Solicitar la guía del cargamento, verificando el conocimiento de embarque aéreo o terrestre debiendo estar sellado por la oficina de embarque.\n3.4.   Cuando el vehículo realice simultáneamente operaciones de transporte internacional y cabotaje, las mercancías deberán estar en espacios separados, debidamente precintado, de caso contrario las mercancías de cabotaje serán sometidas a los mismos requisitos aplicables a una importación.\n3.5.   Solicitar autorización de la administración aduanera para el trafico mixto señalado en el numeral anterior. De no poseerlo será considerado contrabando.\n3.6.   Solicitar la declaración única de aduanas de cabotaje y verificar si declaro el usuario en la actividad aduanera.",
+        "referencia_legal": "a)   CRBV: \nArts. 328, 329.\nb)   LCFANB: \nArt. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: \nArts. 6, 7, 10, 11, 13, 16, y 192.\nd)   LAC: \nArts. 1, 2, 20, 72, 73 y 125.\ne)   LGMAC:\nArts: 1, 2, 4, 7, 23, 24, 49, 69 y 70. \nf)    LN: \nArts. 20, 35, 36, 43, 44, 48 y 54.\no)   LSDC: \nArts. 1, 2, 3, 5, 6, 7, 19 y 34.\ng)   RLOA: \nArts. 222, 223, 224 y 226.\nh)   RRRA: \nArts. 21, 40, 42 y 43.\ni)     RRDBAMR:\nArts. 1 y 2. "
+    },
+    {
+        "origen": "aduana",
+        "situacion": "D.   Control de mercancías y personas que lleguen al país por puertos y aeropuertos habilitados para la importación. ",
+        "incidencia": "1.   Rotura no autorizada de precintos, sellos, marcas, puertas, envases y otros medios de seguridad de mercancías cuyos trámites aduaneros no hayan sido perfeccionados o que no estén destinados al país, salvo caso fortuito o de fuerza mayor.",
+        "procedimiento": "1.1.    Elaborar el acta de retención de los efectos y mercancías implicados en la actuación.\n1.2.    Elaborar el Acta, con reseña fotográfica y dejando constancia de las actuaciones practicadas y del ilícito observado.\n1.3.    Realizar las prácticas conducentes para la conclusión y determinación del hecho, sustentado en las actuaciones practicadas referentes al caso.\n1.4.    Remitir las actuaciones a la Gerencia de la Aduana jurisdiccional.\n1.5.    Remitir las mercancías a orden de la aduana.\n1.6.    Archivar copia de las actuaciones.",
+        "referencia_legal": "a)   CRBV: \nArts. 328, 329.\nb)   LCFANB: \nArt. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: \nArts. 6, 7, 10, 11, 13, 16, y 192.\nd)   LOPA: \nArt. 48.\ne)   RLOA: \nArts. 222, 223, 224 y 226.\nf)    RRRA: \nArts. 21, 40, 42 y 43. "
+    },
+    {
+        "origen": "aduana",
+        "situacion": "D.   Control de mercancías y personas que lleguen al país por puertos y aeropuertos habilitados para la importación. ",
+        "incidencia": "2.   No declarar el (las) arma (s) de fuego en la documentación presentada. (dentro de la zona primaria)",
+        "procedimiento": "2.1.    Elaborar el acta de retención de las armas y vehículo involucrado.\n2.2.    Realizar la aprehensión de los involucrados.\n2.3.    Realizar notificación de derechos a los aprehendidos.\n2.4.    Realizar cadena de custodia de las armas y demás objetos de interés criminalístico y ponerlas a orden del Ministerio Publico.\n2.5.    Realizar reseña fotográfica de las armas y todo el procedimiento.\n2.6.    Notificar y remitir las actuaciones del procedimiento Ministerio Publico.\n2.7.    Informar a la autoridad portuaria y/o aeroportuaria correspondiente.",
+        "referencia_legal": "a)    CRBV: \nArts. 324, 328, 329.\nb)   LCFANB: \nArt. 73 # 3, 4, 6, 7 y 8.\nc)   LSDC: \nArts. 1, 2, 3, 5, 6, 7, 19 y 34.\nd)   LOA: \nArts. 6, 7, 10, 11, 13, 16, 177 #3 y 192.\ne)   LOSPI: \nArts. 12, 24 # 1 y 25 # 13\nf)     COPP: \nArts. 113, 114, 127, 191 y 192.\ng)   RRRA: \nArts. 9 y 30.\nh)   AAV: \nArt: 21"
+    },
+    {
+        "origen": "aduana",
+        "situacion": "D.   Control de mercancías y personas que lleguen al país por puertos y aeropuertos habilitados para la importación. ",
+        "incidencia": "3.   Existencia de polizón a bordo del vehículo. (buque, nave, y / o aeronave).",
+        "procedimiento": "3.1.   Detener preventivamente al polizón.\n3.2.   Solicitar documentación respectiva que acredite la identificación y nacionalidad del polizón.\n3.3.   Se deberá llevar al ciudadano a un centro asistencial para realizar chequeo médico general, con motivo de descartar si la persona presenta golpes o maltratos, así como también el descarte de cualquier tipo de enfermedad infectocontagiosa que pueda afectar a la salud pública de los habitantes de la Republica.\n3.4     Entrevistar al polizón, haciendo uso de un traductor si es necesario.\n3.5     Realizar reseña fotográfica para sustentar las actuaciones.\n3.6     Realizar acta de lectura de derechos.\n3.7     Realizar acta de las actuaciones realizadas.\n3.8     Informar al Órgano competente encargado de prestar el Servicio de Identificación, Migración y Extranjería, sobre la detención del ciudadano extranjero y de las condiciones en que fue encontrado.\n3.9     Oficiar a interpol solicitando información del polizón.",
+        "referencia_legal": "c)     CRBV: \nArts. 49, 328, 329.\nd)     LCFANB: \nArt. 73 # 3, 4, 6, 7 y 8.\ne)     LOA: \nArts. 6, 7, 10, 11, 13, 16, y 192.\nf)      LEM: \nArts. 5, 7 Y 9.\ng)     LOSPI: \n     Arts. 12, 24 # 1 y 25 # 13\nh)     COPP:\n     Arts. 113, 114, 127, 191 y 192."
+    },
+    {
+        "origen": "aduana",
+        "situacion": "E.   Control de Embarque y desembarque de personas a las naves y/o buques. (dentro de la zona primaria)",
+        "incidencia": "1.   Permisos a personas no autorizadas para visitar naves o buques. (dentro de la zona primaria)",
+        "procedimiento": "1.1.   Controlar el desembarco de tripulantes y pasajeros con destino a ese puerto.\n1.2.   Impedir el desembarque de pasajeros no autorizados por la autoridad competente en materia de extranjería y migración.\n1.3.   Solicitar al visitante el permiso del Gerente de la Aduana identificado con la frase “VALIDO POR UNA VEZ”, visado por el comandante jurisdiccional para su posterior envío a la Administración Aduanera.\n1.4.   Constatar que el visitante no sea una persona que ofrezca servicios personales (guías, agentes de boletos, vendedores ambulantes, taxistas, entre otros).\n1.5.   Identificar toda persona autorizada para ir a bordo.\n1.6.   Verificar que los pasajeros, en tránsito aborden la nave o buque.",
+        "referencia_legal": "a)   CRBV: \nArts. 49, 328, 329.\nb)   LCFANB: \nArt. 73 # 3, 4, 6, 7 y 8.\nc)   LOA: \nArts. 6, 7, 10, 11, 13, 16, y 192.\nd)   LEM: \nArts. 5, 7 Y 9.\ne)   RRRA: Arts.13, 22, 23, 24, 25, 26, 27, 28 y 29."
+    }
+]

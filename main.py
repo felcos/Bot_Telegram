@@ -53,7 +53,7 @@ async def guardar_nombres(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def guardar_cedula(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['cedula'] = update.message.text
-    await update.message.reply_text("Rango:")
+    await update.message.reply_text("Grado:")
     return RANGO
 
 async def guardar_rango(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -83,7 +83,7 @@ async def guardar_unidad(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     keyboard = [[
-        InlineKeyboardButton("Capitales", callback_data='tema_capitales'),
+        InlineKeyboardButton("Legitimación", callback_data='tema_capitales'),
         InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')
     ], [
         InlineKeyboardButton("Tributos", callback_data='tema_tributos'),
@@ -226,8 +226,9 @@ async def mostrar_procedimiento_y_referencia(update: Update, context: ContextTyp
     user_id = query.from_user.id
     tema = usuarios_contexto[user_id]['tema']
     situacion = usuarios_contexto[user_id]['situacion']
-    i = int(query.data.replace("modalidad_", ""))
-    modalidad = context.user_data["modalidades_lista"][i]
+    index = int(query.data.replace("modalidad_", ""))
+    modalidad = usuarios_contexto[user_id]['modalidades'][index]
+
 
     for item in json_data:
         if item.get("origen") == tema and item.get("situacion") == situacion and item.get("modalidad") == modalidad:
