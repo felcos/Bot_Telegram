@@ -194,31 +194,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import Update
 from telegram.ext import CallbackContext
 
-async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    user_id = query.from_user.id
-    tema = usuarios_contexto[user_id]['tema']
-    situacion = query.data.replace("situacion_", "")
-    usuarios_contexto[user_id]['situacion'] = situacion
-
-    # Buscar modalidades relacionadas
-    modalidades = list({
-        item["modalidad"]
-        for item in json_data
-        if item.get("origen") == tema and item.get("situacion") == situacion
-    })
-
-    if not modalidades:
-        await query.edit_message_text("No se encontraron modalidades para esa situación.")
-        return
-
-    botones = [
-        [InlineKeyboardButton(modalidad[:60], callback_data=f"modalidad_{i}")]
-        for i, modalidad in enumerate(modalidades)
-    ]
-    context.user_data["modalidades_lista"] = modalidades
-    await query.edit_message_text("Selecciona la modalidad:", reply_markup=InlineKeyboardMarkup(botones))
 
 async def mostrar_procedimiento_y_referencia(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -272,23 +247,34 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
     query = update.callback_query
     await query.answer()
     user_id = query.from_user.id
-    index = int(query.data.replace("situacion_", ""))
-    situacion = usuarios_contexto[user_id]['situaciones'][index]
-    usuarios_contexto[user_id]['situacion'] = situacion
     tema = usuarios_contexto[user_id]['tema']
+    situacion = query.data.replace("situacion_", "")
+    usuarios_contexto[user_id]['situacion'] = situacion
 
-
-    # Filtrar modalidades para la situación seleccionada
-    modalidades_filtradas = [item['modalidad'] for item in json_data
-                            if item['situacion'] == situacion and item.get('origen', '').lower() == tema]
-    modalidades_unicas = sorted(set(modalidades_filtradas))
-    usuarios_contexto[user_id]['modalidades'] = modalidades_unicas
-
-    keyboard = [
-        [InlineKeyboardButton(dividir_lineas(m), callback_data=f"modalidad_{i}")]
-        for i, m in enumerate(modalidades_unicas[:25])
+    # Buscar modalidades relacionadas
+    modalidades = [
+        item['modalidad']
+        for item in json_data
+        if 'modalidad' in item and item.get('situacion') == situacion and item.get('origen', '').lower() == tema
     ]
-    await query.edit_message_text("Selecciona la modalidad:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+    if not modalidades:
+        await query.edit_message_text("No se encontraron modalidades para esa situación.")
+        return
+    
+    usuarios_contexto[user_id]['modalidades'] = modalidades
+
+    modalidades_filtradas = sorted(set(item['situacion'] for item in json_data if item.get('origen', '').lower() == tema))
+    usuarios_contexto[user_id]['modalidades'] = modalidades_filtradas  # Guardamos la lista completa
+    botones = [
+        [InlineKeyboardButton(dividir_lineas(s), callback_data=f"modalidad_{i}")]
+        for i, s in enumerate(modalidades_filtradas[:25])
+    ]
+
+    context.user_data["modalidades_filtradas"] = modalidades
+    await query.edit_message_text("Selecciona la modalidad/incidencia:", reply_markup=InlineKeyboardMarkup(botones))
+    
     return "ELEGIR_MODALIDAD"
 
 async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -335,11 +321,11 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
     app.add_handler(CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_"))
-    app.add_handler(CallbackQueryHandler(mostrar_procedimiento_y_referencia, pattern="^modalidad_"))
+    app.add_handler(CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
 
     app.run_webhook(
         listen="0.0.0.0",
-        port=int(os.environ.get("PORT", 8443)),
+        port=int(os.environ.get("PORT", 18443)),
         webhook_url="https://bot-telegram-yzpk.onrender.com"
     )
