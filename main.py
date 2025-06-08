@@ -437,6 +437,20 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return ConversationHandler.END
 
+import os
+
+async def ver_logs_oculto(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    ruta = "log.txt"
+
+    if not os.path.exists(ruta):
+        await update.message.reply_text("El archivo de registros no existe todavía.")
+        return
+
+    if os.path.getsize(ruta) == 0:
+        await update.message.reply_text("El archivo de registros está vacío.")
+        return
+
+    await update.message.reply_document(document=open(ruta, "rb"), filename="log.txt", caption="📄 Registros de consultas guiadas.")
 
 
 if __name__ == "__main__":
@@ -474,6 +488,8 @@ if __name__ == "__main__":
     app.add_handler(CallbackQueryHandler(lambda u, c: u.callback_query.message.reply_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí."), pattern="^consulta_libre$"))
     app.add_handler(CallbackQueryHandler(mostrar_documentos, pattern="^mostrar_documentos$"))
     app.add_handler(CallbackQueryHandler(descargar_documento, pattern="^descargar_\\d+$"))
+    app.add_handler(CommandHandler("VerLogsX", ver_logs_oculto))
+
 
 
     app.run_webhook(
