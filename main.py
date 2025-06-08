@@ -29,14 +29,14 @@ BASE_JSON_DIR = "documentos"
 json_data = cargar_json_desde_txt(BASE_JSON_DIR)
 
 # Estados para ConversationHandler
-APELLIDOS, NOMBRES, CEDULA, RANGO, UNIDAD, TEMA, TIPO_CONSULTA = range(7)
+APELLIDOS, NOMBRES, CEDULA, RANGO, UNIDAD, TEMA = range(6)
 usuarios_contexto = {}
 
 async def volver_al_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     keyboard = [
-        [InlineKeyboardButton("Consulta guiada", callback_data="continuar_consulta")],
+        [InlineKeyboardButton("Consulta guiada", callback_data="iniciar_consulta_callback")],
         [InlineKeyboardButton("Consulta libre", callback_data="consulta_libre")]
     ]
 
@@ -72,7 +72,15 @@ async def iniciar_consulta_callback(update: Update, context: ContextTypes.DEFAUL
     await context.bot.send_message(chat_id=query.message.chat.id, text="Indica tus apellidos:")
     return APELLIDOS
 
-
+async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    modo = query.data
+    user_id = query.from_user.id
+    usuarios_contexto[query.from_user.id]['modo'] = modo
+    if modo == "consulta_libre":
+        await query.edit_message_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí.")
+        return ConversationHandler.END
 
 async def iniciar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Indica tus apellidos:")
@@ -153,7 +161,7 @@ async def elegir_tema(update: Update, context: ContextTypes.DEFAULT_TYPE):
         InlineKeyboardButton("Consulta libre", callback_data='consulta_libre')
     ]]
     await query.edit_message_text("¿Cómo deseas realizar tu consulta?", reply_markup=InlineKeyboardMarkup(keyboard))
-    return TIPO_CONSULTA
+    return 
 
 async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -362,29 +370,29 @@ if __name__ == "__main__":
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
     conv_handler = ConversationHandler(
-        entry_points=[MessageHandler(filters.Regex("(?i)^consulta$"), iniciar_consulta)],
+        entry_points=[
+            MessageHandler(filters.Regex("(?i)^consulta$"), iniciar_consulta_callback),
+            CallbackQueryHandler(iniciar_consulta_callback, pattern="^iniciar_consulta_callback$")
+        ],
         states={
             APELLIDOS: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_apellidos)],
             NOMBRES: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_nombres)],
             CEDULA: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_cedula)],
             RANGO: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_rango)],
             UNIDAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_unidad)],
-            TEMA: [CallbackQueryHandler(elegir_tema)],
-            TIPO_CONSULTA: [CallbackQueryHandler(tipo_consulta)],
+            TEMA: [CallbackQueryHandler(elegir_tema, pattern="^tema_")],
             "ELEGIR_SITUACION": [CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_")],
             "ELEGIR_MODALIDAD": [CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_")],
         },
-        fallbacks=[]
+        fallbacks=[
+            CallbackQueryHandler(volver_al_menu, pattern="^volver_menu$")
+        ]
     )
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
-    app.add_handler(CallbackQueryHandler(iniciar_consulta, pattern="^iniciar_consulta$"))
-    app.add_handler(CallbackQueryHandler(volver_al_menu, pattern="^volver_menu$"))
-    app.add_handler(CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_"))
-    app.add_handler(CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
-
+    app.add_handler(CallbackQueryHandler(volver_al_menu, pattern="^volver_menu$"))
 
     app.run_webhook(
         listen="0.0.0.0",
