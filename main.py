@@ -36,9 +36,10 @@ async def volver_al_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     keyboard = [
-        [InlineKeyboardButton("Consulta guiada", callback_data="iniciar_consulta")],
+        [InlineKeyboardButton("Consulta guiada", callback_data="continuar_consulta")],
         [InlineKeyboardButton("Consulta libre", callback_data="consulta_libre")]
     ]
+
     await query.edit_message_text(
         "👮‍♂️ Has vuelto al menú principal. ¿Cómo deseas continuar?",
         reply_markup=InlineKeyboardMarkup(keyboard)
@@ -48,7 +49,7 @@ async def volver_al_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Consulta guiada", callback_data="iniciar_consulta")],
+        [InlineKeyboardButton("Consulta guiada", callback_data="iniciar_consulta_callback")],
         [InlineKeyboardButton("Consulta libre", callback_data="consulta_libre")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -72,6 +73,7 @@ async def iniciar_consulta_callback(update: Update, context: ContextTypes.DEFAUL
     return APELLIDOS
 
 
+
 async def iniciar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Indica tus apellidos:")
     return APELLIDOS
@@ -80,6 +82,8 @@ async def guardar_apellidos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['apellidos'] = update.message.text
     await update.message.reply_text("Ahora tus nombres:")
     return NOMBRES
+
+
 
 async def guardar_nombres(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['nombres'] = update.message.text
@@ -117,6 +121,17 @@ async def guardar_unidad(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "modo": "guiado"
     }
 
+    keyboard = [[
+        InlineKeyboardButton("Legitimación", callback_data='tema_capitales'),
+        InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')
+    ], [
+        InlineKeyboardButton("Tributos", callback_data='tema_tributos'),
+        InlineKeyboardButton("Aduana", callback_data='tema_aduana')
+    ]]
+    await update.message.reply_text("¿Sobre qué tema es tu consulta?", reply_markup=InlineKeyboardMarkup(keyboard))
+    return TEMA
+
+async def continuar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[
         InlineKeyboardButton("Legitimación", callback_data='tema_capitales'),
         InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')
