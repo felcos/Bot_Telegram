@@ -2,6 +2,10 @@ import os
 import fitz  # PyMuPDF
 import docx
 import difflib
+import logging
+from telegram import Update
+from telegram.ext import ContextTypes
+
 
 BASE_DIR = "documentos"
 TEMPLATE_DIR = "templates"
@@ -224,3 +228,4 @@ async def documentar(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "\n".join(estructura_generica),
         parse_mode="Markdown"
     )
+
