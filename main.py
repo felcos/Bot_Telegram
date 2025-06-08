@@ -32,9 +32,44 @@ json_data = cargar_json_desde_txt(BASE_JSON_DIR)
 APELLIDOS, NOMBRES, CEDULA, RANGO, UNIDAD, TEMA, TIPO_CONSULTA = range(7)
 usuarios_contexto = {}
 
+async def volver_al_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    keyboard = [
+        [InlineKeyboardButton("Consulta guiada", callback_data="iniciar_consulta")],
+        [InlineKeyboardButton("Consulta libre", callback_data="consulta_libre")]
+    ]
+    await query.edit_message_text(
+        "👮‍♂️ Has vuelto al menú principal. ¿Cómo deseas continuar?",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+    return ConversationHandler.END
+
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [[InlineKeyboardButton("Iniciar Consulta", callback_data="iniciar_consulta")]]
-    await update.message.reply_text("Hola, soy un bot de la GNB especializado en Legitimación, aduana, criptoactivos y tributos", reply_markup=InlineKeyboardMarkup(keyboard))
+    keyboard = [
+        [InlineKeyboardButton("Consulta guiada", callback_data="iniciar_consulta")],
+        [InlineKeyboardButton("Consulta libre", callback_data="consulta_libre")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if update.message:
+        await update.message.reply_text(
+            "👮‍♂️ Bienvenido. Soy un bot de apoyo legal para la Guardia Nacional Bolivariana.\n\n¿Deseas iniciar una consulta?",
+            reply_markup=reply_markup
+        )
+    elif update.callback_query:
+        await update.callback_query.answer()
+        await update.callback_query.message.reply_text(
+            "👮‍♂️ Bienvenido. Soy un bot de apoyo legal para la Guardia Nacional Bolivariana.\n\n¿Deseas iniciar una consulta?",
+            reply_markup=reply_markup
+        )
+
+async def iniciar_consulta_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await context.bot.send_message(chat_id=query.message.chat.id, text="Indica tus apellidos:")
+    return APELLIDOS
 
 
 async def iniciar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -329,10 +364,12 @@ if __name__ == "__main__":
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
+    app.add_handler(CallbackQueryHandler(iniciar_consulta, pattern="^iniciar_consulta$"))
+    app.add_handler(CallbackQueryHandler(volver_al_menu, pattern="^volver_menu$"))
     app.add_handler(CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_"))
     app.add_handler(CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
-    app.add_handler(CallbackQueryHandler(iniciar_consulta, pattern="^iniciar_consulta$"))
+
 
     app.run_webhook(
         listen="0.0.0.0",
