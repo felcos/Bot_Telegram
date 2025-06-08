@@ -346,12 +346,14 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     user_id = query.from_user.id
-    modalidad = query.data.replace("modalidad_", "")
+
+    index = int(query.data.replace("modalidad_", ""))
+    modalidad = usuarios_contexto[user_id]['modalidades'][index]
     situacion = usuarios_contexto[user_id]['situacion']
     tema = usuarios_contexto[user_id]['tema']
 
     for item in json_data:
-        if item['situacion'] == situacion and item['modalidad'] == modalidad and tema in item.get('origen', '').lower():
+        if item['situacion'] == situacion and item['modalidad'] == modalidad and item.get('origen', '').lower() == tema:
             texto = (
                 f"Situación: {item['situacion']}\n"
                 f"Modalidad: {item['modalidad']}\n"
