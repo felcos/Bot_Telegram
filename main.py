@@ -76,7 +76,7 @@ async def guardar_unidad(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     keyboard = [[
-        InlineKeyboardButton("Legitimación de Capitales", callback_data='tema_legitimacion'),
+        InlineKeyboardButton("Capitales", callback_data='tema_legitimacion'),
         InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')
     ], [
         InlineKeyboardButton("Tributos", callback_data='tema_tributos'),
@@ -102,7 +102,10 @@ async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     modo = query.data
+    user_id = query.from_user.id
     usuarios_contexto[query.from_user.id]['modo'] = modo
+    if modo == 'consulta_guiada' and usuarios_contexto[user_id]['tema'] == 'capitales':
+        return await mostrar_situaciones(update, context)
     await query.edit_message_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí.")
     return ConversationHandler.END
 
@@ -178,6 +181,58 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logging.exception("Error al procesar la pregunta")
         await update.message.reply_text("Lo siento, ha ocurrido un error procesando tu solicitud.")
 
+
+from telegram.ext import CallbackContext  # Si no está importado aún
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
+from telegram.ext import CallbackContext
+
+
+async def mostrar_situaciones(update: Update, context: CallbackContext):
+    query = update.callback_query
+    await query.answer()
+
+    situaciones = sorted(set(item["situacion"] for item in json_data if usuarios_contexto[query.from_user.id]["tema"] == "capitales"))
+    keyboard = [[InlineKeyboardButton(situacion, callback_data=f"situacion_{situacion}")] for situacion in situaciones[:20]]
+    await query.edit_message_text("Selecciona la situación:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+    return "MODALIDAD"
+
+async def mostrar_modalidades(update: Update, context: CallbackContext):
+    query = update.callback_query
+    await query.answer()
+    situacion = query.data.replace("situacion_", "")
+    user_id = query.from_user.id
+    usuarios_contexto[user_id]["situacion"] = situacion
+
+    modalidades = sorted(set(item["modalidad"] for item in json_data if item["situacion"] == situacion and usuarios_contexto[user_id]["tema"] == "capitales"))
+    keyboard = [[InlineKeyboardButton(modalidad, callback_data=f"modalidad_{modalidad}")] for modalidad in modalidades[:20]]
+    await query.edit_message_text("Selecciona la modalidad:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+    return ConversationHandler.END
+
+async def mostrar_respuesta(update: Update, context: CallbackContext):
+    query = update.callback_query
+    await query.answer()
+    modalidad = query.data.replace("modalidad_", "")
+    user_id = query.from_user.id
+    situacion = usuarios_contexto[user_id].get("situacion", "")
+    tema = usuarios_contexto[user_id].get("tema", "")
+
+    for item in json_data:
+        if item.get("situacion") == situacion and item.get("modalidad") == modalidad and tema == "capitales":
+            respuesta = (
+                f"Situación: {item.get('situacion')}\n"
+                f"Modalidad: {item.get('modalidad')}\n"
+                f"Procedimiento: {item.get('procedimiento')}\n"
+                f"Referencia Legal: {item.get('referencia_legal')}"
+            )
+            rango = usuarios_contexto[user_id].get("rango", "")
+            await query.edit_message_text(f"Mi {rango},\n\n{respuesta}")
+            return
+    await query.edit_message_text("No se encontró información para esa combinación.")
+
+
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
@@ -191,6 +246,7 @@ if __name__ == "__main__":
             UNIDAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_unidad)],
             TEMA: [CallbackQueryHandler(elegir_tema)],
             TIPO_CONSULTA: [CallbackQueryHandler(tipo_consulta)],
+            "MODALIDAD": [CallbackQueryHandler(mostrar_modalidades)],
         },
         fallbacks=[]
     )
