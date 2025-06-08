@@ -154,14 +154,15 @@ async def elegir_tema(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     tema = query.data.replace("tema_", "")
-    usuarios_contexto[query.from_user.id]['tema'] = tema
+    user_id = query.from_user.id
+    usuarios_contexto[user_id]['tema'] = tema
 
-    keyboard = [[
-        InlineKeyboardButton("Consulta Guiada", callback_data='consulta_guiada'),
-        InlineKeyboardButton("Consulta libre", callback_data='consulta_libre')
-    ]]
-    await query.edit_message_text("¿Cómo deseas realizar tu consulta?", reply_markup=InlineKeyboardMarkup(keyboard))
-    return 
+    # Si el modo ya es guiado, no se pregunta de nuevo
+    if usuarios_contexto[user_id].get("modo") == "guiado":
+        return await mostrar_situaciones(update, context)
+    await mostrar_situaciones(update, context)
+    return "ELEGIR_SITUACION"
+
 
 async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -392,7 +393,14 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
+
+    app.add_handler(CallbackQueryHandler(iniciar_consulta, pattern="^iniciar_consulta$"))
     app.add_handler(CallbackQueryHandler(volver_al_menu, pattern="^volver_menu$"))
+    app.add_handler(CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_"))
+    app.add_handler(CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_"))
+    app.add_handler(CallbackQueryHandler(iniciar_consulta_callback, pattern="^iniciar_consulta_callback$"))
+    app.add_handler(CallbackQueryHandler(lambda u, c: u.callback_query.message.reply_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí."), pattern="^consulta_libre$"))
+
 
     app.run_webhook(
         listen="0.0.0.0",
