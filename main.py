@@ -83,8 +83,19 @@ async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
 async def iniciar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Indica tus apellidos:")
-    return APELLIDOS
+    user_id = update.effective_user.id
+    if user_id in usuarios_contexto:
+        await update.message.reply_text("¿Sobre qué tema es tu nueva consulta?", reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("Legitimación", callback_data='tema_capitales'),
+             InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')],
+            [InlineKeyboardButton("Tributos", callback_data='tema_tributos'),
+             InlineKeyboardButton("Aduana", callback_data='tema_aduana')],
+        ]))
+        return TEMA
+    else:
+        await update.message.reply_text("Indica tus apellidos:")
+        return APELLIDOS
+
 
 async def guardar_apellidos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['apellidos'] = update.message.text
@@ -352,29 +363,42 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     situacion = usuarios_contexto[user_id]['situacion']
     tema = usuarios_contexto[user_id]['tema']
 
-    for item in json_data:
-        if item['situacion'] == situacion and item['modalidad'] == modalidad and item.get('origen', '').lower() == tema:
-            texto = (
-                f"Situación: {item['situacion']}\n"
-                f"Modalidad: {item['modalidad']}\n"
-                f"Procedimiento: {item.get('procedimiento', 'No disponible')}\n"
-                f"Referencia Legal: {item.get('referencia_legal', 'No disponible')}"
-            )
-            await query.edit_message_text(texto)
-            return ConversationHandler.END
+    encontrado = False
 
-    await query.edit_message_text("No se encontró información para esa combinación.")
-    await query.message.reply_text("¿Deseas realizar otra consulta?", reply_markup=InlineKeyboardMarkup([
-    [InlineKeyboardButton("Volver al menú", callback_data="iniciar_consulta")]]))
+    for item in json_data:
+        if (
+            item.get('situacion') == situacion and
+            item.get('modalidad') == modalidad and
+            item.get('origen', '').lower() == tema
+        ):
+            texto = (
+                f"✅ *Procedimiento:*\n{item.get('procedimiento', 'No disponible')}\n\n"
+                f"📜 *Referencia Legal:*\n{item.get('referencia_legal', 'No disponible')}"
+            )
+            await query.edit_message_text(texto, parse_mode="Markdown")
+            encontrado = True
+            break
+
+    if not encontrado:
+        await query.edit_message_text("⚠️ No se encontró información detallada para esa combinación.")
+
+    # En ambos casos, ofrecer nueva consulta
+    await query.message.reply_text(
+        "¿Deseas realizar otra consulta?\n\n"
+        "🟢 Escribe `consulta` para iniciar una *consulta guiada*.\n"
+        "🟡 O simplemente escribe tu duda para una *consulta libre*.",
+        parse_mode="Markdown"
+    )
 
     return ConversationHandler.END
+
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
     conv_handler = ConversationHandler(
         entry_points=[
-            MessageHandler(filters.Regex("(?i)^consulta$"), iniciar_consulta_callback),
+            MessageHandler(filters.Regex("(?i)^consulta$"), iniciar_consulta),
             CallbackQueryHandler(iniciar_consulta_callback, pattern="^iniciar_consulta_callback$")
         ],
         states={
