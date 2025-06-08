@@ -32,6 +32,42 @@ json_data = cargar_json_desde_txt(BASE_JSON_DIR)
 APELLIDOS, NOMBRES, CEDULA, RANGO, UNIDAD, TEMA = range(6)
 usuarios_contexto = {}
 
+async def mostrar_documentos(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    archivos = os.listdir("templates")
+    archivos = [f for f in archivos if f.endswith(".docx") or f.endswith(".pdf") or f.endswith(".txt")]
+
+    if not archivos:
+        await query.edit_message_text("No hay documentos disponibles para descargar.")
+        return
+
+    botones = [
+        [InlineKeyboardButton(f"📎 {nombre}", callback_data=f"descargar_{i}")]
+        for i, nombre in enumerate(archivos)
+    ]
+    context.user_data['documentos_disponibles'] = archivos
+
+    await query.edit_message_text("Selecciona el documento que deseas descargar:", reply_markup=InlineKeyboardMarkup(botones))
+
+async def descargar_documento(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    index = int(query.data.replace("descargar_", ""))
+    archivos = context.user_data.get('documentos_disponibles', [])
+
+    if index < len(archivos):
+        archivo = archivos[index]
+        ruta = os.path.join("templates", archivo)
+        if os.path.exists(ruta):
+            await query.message.reply_document(document=open(ruta, "rb"), filename=archivo)
+        else:
+            await query.edit_message_text("No se pudo encontrar el archivo.")
+    else:
+        await query.edit_message_text("Índice de documento inválido.")
+
 async def volver_al_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -389,11 +425,14 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("⚠️ No se encontró información detallada para esa combinación.")
 
     # Mensaje para continuar
+    # Mensaje para continuar
+    keyboard = [
+        [InlineKeyboardButton("📄 Descargar un documento", callback_data="mostrar_documentos")],
+        [InlineKeyboardButton("🔁 Nueva consulta guiada", callback_data="iniciar_consulta_callback")]
+    ]
     await query.message.reply_text(
-        "¿Deseas realizar otra consulta?\n\n"
-        "🟢 Escribe `consulta` para iniciar una *consulta guiada*.\n"
-        "🟡 O simplemente escribe tu duda para una *consulta libre*.",
-        parse_mode="Markdown"
+        "¿Deseas realizar otra acción?",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
     return ConversationHandler.END
@@ -433,6 +472,8 @@ if __name__ == "__main__":
     app.add_handler(CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_"))
     app.add_handler(CallbackQueryHandler(iniciar_consulta_callback, pattern="^iniciar_consulta_callback$"))
     app.add_handler(CallbackQueryHandler(lambda u, c: u.callback_query.message.reply_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí."), pattern="^consulta_libre$"))
+    app.add_handler(CallbackQueryHandler(mostrar_documentos, pattern="^mostrar_documentos$"))
+    app.add_handler(CallbackQueryHandler(descargar_documento, pattern="^descargar_\\d+$"))
 
 
     app.run_webhook(
