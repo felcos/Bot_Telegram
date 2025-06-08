@@ -92,7 +92,7 @@ async def elegir_tema(update: Update, context: ContextTypes.DEFAULT_TYPE):
     usuarios_contexto[query.from_user.id]['tema'] = tema
 
     keyboard = [[
-        InlineKeyboardButton("Buscar situación y modalidad", callback_data='consulta_guiada'),
+        InlineKeyboardButton("Consulta Guiada", callback_data='consulta_guiada'),
         InlineKeyboardButton("Consulta libre", callback_data='consulta_libre')
     ]]
     await query.edit_message_text("¿Cómo deseas realizar tu consulta?", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -187,6 +187,50 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import Update
 from telegram.ext import CallbackContext
 
+async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    user_id = query.from_user.id
+    tema = usuarios_contexto[user_id]['tema']
+    situacion = query.data.replace("situacion_", "")
+    usuarios_contexto[user_id]['situacion'] = situacion
+
+    # Buscar modalidades relacionadas
+    modalidades = list({
+        item["modalidad"]
+        for item in json_data
+        if item.get("origen") == tema and item.get("situacion") == situacion
+    })
+
+    if not modalidades:
+        await query.edit_message_text("No se encontraron modalidades para esa situación.")
+        return
+
+    botones = [
+        [InlineKeyboardButton(modalidad[:60], callback_data=f"modalidad_{i}")]
+        for i, modalidad in enumerate(modalidades)
+    ]
+    context.user_data["modalidades_lista"] = modalidades
+    await query.edit_message_text("Selecciona la modalidad:", reply_markup=InlineKeyboardMarkup(botones))
+
+async def mostrar_procedimiento_y_referencia(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    user_id = query.from_user.id
+    tema = usuarios_contexto[user_id]['tema']
+    situacion = usuarios_contexto[user_id]['situacion']
+    i = int(query.data.replace("modalidad_", ""))
+    modalidad = context.user_data["modalidades_lista"][i]
+
+    for item in json_data:
+        if item.get("origen") == tema and item.get("situacion") == situacion and item.get("modalidad") == modalidad:
+            procedimiento = item.get("procedimiento", "No se encontró el procedimiento.")
+            referencia = item.get("referencia_legal", "No hay referencias legales.")
+            texto = f"✅ *Procedimiento:*\n{procedimiento}\n\n📜 *Referencia Legal:*\n{referencia}"
+            await query.edit_message_text(texto, parse_mode="Markdown")
+            return
+    await query.edit_message_text("No se encontró información detallada para esa modalidad.")
+
 
 async def mostrar_situaciones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -260,6 +304,8 @@ if __name__ == "__main__":
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
+    app.add_handler(CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_"))
+    app.add_handler(CallbackQueryHandler(mostrar_procedimiento_y_referencia, pattern="^modalidad_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
 
     app.run_webhook(
