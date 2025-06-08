@@ -477,6 +477,7 @@ if __name__ == "__main__":
     )
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("verlog", ver_logs_oculto))
     app.add_handler(conv_handler)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
 
@@ -488,7 +489,7 @@ if __name__ == "__main__":
     app.add_handler(CallbackQueryHandler(lambda u, c: u.callback_query.message.reply_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí."), pattern="^consulta_libre$"))
     app.add_handler(CallbackQueryHandler(mostrar_documentos, pattern="^mostrar_documentos$"))
     app.add_handler(CallbackQueryHandler(descargar_documento, pattern="^descargar_\\d+$"))
-    app.add_handler(CommandHandler("VerLogsX", ver_logs_oculto))
+
 
 
 
