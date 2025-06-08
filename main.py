@@ -255,13 +255,14 @@ async def mostrar_situaciones(update: Update, context: ContextTypes.DEFAULT_TYPE
         await query.edit_message_text("No se encontraron situaciones para este tema.")
         return
     
-    situaciones_unicas = list(sorted(set(situaciones)))
-    usuarios_contexto[user_id]['situaciones'] = situaciones_unicas
+    situaciones_filtradas = sorted(set(item['situacion'] for item in json_data if item.get('origen', '').lower() == tema))
+    usuarios_contexto[user_id]['situaciones'] = situaciones_filtradas  # Guardamos la lista completa
 
     keyboard = [
         [InlineKeyboardButton(dividir_lineas(s), callback_data=f"situacion_{i}")]
-        for i, s in enumerate(situaciones_unicas[:25])
+        for i, s in enumerate(situaciones_filtradas[:25])
     ]
+
     await query.edit_message_text("Selecciona la situación:", reply_markup=InlineKeyboardMarkup(keyboard))
     return "ELEGIR_SITUACION"
 
@@ -277,10 +278,15 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
     # Filtrar modalidades para la situación seleccionada
-    modalidades = [item['modalidad'] for item in json_data if item['situacion'] == situacion and tema in item.get('origen', '').lower()]
-    modalidades = list(set(modalidades))
-    modalidades.sort()
-    keyboard = [[InlineKeyboardButton(m, callback_data=f"modalidad_{m}")] for m in modalidades[:25]]
+    modalidades_filtradas = [item['modalidad'] for item in json_data
+                            if item['situacion'] == situacion and item.get('origen', '').lower() == tema]
+    modalidades_unicas = sorted(set(modalidades_filtradas))
+    usuarios_contexto[user_id]['modalidades'] = modalidades_unicas
+
+    keyboard = [
+        [InlineKeyboardButton(dividir_lineas(m), callback_data=f"modalidad_{i}")]
+        for i, m in enumerate(modalidades_unicas[:25])
+    ]
     await query.edit_message_text("Selecciona la modalidad:", reply_markup=InlineKeyboardMarkup(keyboard))
     return "ELEGIR_MODALIDAD"
 
