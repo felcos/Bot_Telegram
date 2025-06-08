@@ -239,11 +239,21 @@ async def mostrar_situaciones(update: Update, context: ContextTypes.DEFAULT_TYPE
     tema = usuarios_contexto[user_id]['tema']
 
     # Filtrar situaciones únicas del tema seleccionado
-    situaciones = list(set(item['situacion'] for item in json_data if tema in item.get('origen', '').lower()))
+    situaciones = list(set(
+        item['situacion'] for item in json_data if tema in item.get('origen', '').lower()
+    ))
     situaciones.sort()
-    keyboard = [[InlineKeyboardButton(s, callback_data=f"situacion_{s}")] for s in situaciones[:25]]  # Máx 25 botones
+
+    if not situaciones:
+        await query.edit_message_text("No se encontraron situaciones para este tema.")
+        return
+
+    keyboard = [
+        [InlineKeyboardButton(s[:50], callback_data=f"situacion_{s[:30]}")] for s in situaciones[:25]
+    ]
     await query.edit_message_text("Selecciona la situación:", reply_markup=InlineKeyboardMarkup(keyboard))
     return "ELEGIR_SITUACION"
+
 
 async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
