@@ -33,9 +33,9 @@ APELLIDOS, NOMBRES, CEDULA, RANGO, UNIDAD, TEMA, TIPO_CONSULTA = range(7)
 usuarios_contexto = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "Hola, soy un bot especializado en asesoría legal. Escribe 'consulta' para iniciar una nueva consulta guiada."
-    )
+    keyboard = [[InlineKeyboardButton("Iniciar Consulta", callback_data="iniciar_consulta")]]
+    await update.message.reply_text("Hola, soy un bot de la GNB especializado en Legitimación, aduana, criptoactivos y tributos", reply_markup=InlineKeyboardMarkup(keyboard))
+
 
 async def iniciar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Indica tus apellidos:")
@@ -248,7 +248,9 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
     await query.answer()
     user_id = query.from_user.id
     tema = usuarios_contexto[user_id]['tema']
-    situacion = query.data.replace("situacion_", "")
+
+    index = int(query.data.replace("situacion_", ""))
+    situacion = usuarios_contexto[user_id]['situaciones'][index]
     usuarios_contexto[user_id]['situacion'] = situacion
 
     # Buscar modalidades relacionadas
@@ -262,10 +264,14 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
     if not modalidades:
         await query.edit_message_text("No se encontraron modalidades para esa situación.")
         return
-    
-    usuarios_contexto[user_id]['modalidades'] = modalidades
 
-    modalidades_filtradas = sorted(set(item['situacion'] for item in json_data if item.get('origen', '').lower() == tema))
+    modalidades_filtradas = sorted(set(
+        item['modalidad'] for item in json_data
+        if item.get('situacion') == situacion and item.get('origen', '').lower() == tema
+    ))
+    usuarios_contexto[user_id]['modalidades'] = modalidades_filtradas
+
+
     usuarios_contexto[user_id]['modalidades'] = modalidades_filtradas  # Guardamos la lista completa
     botones = [
         [InlineKeyboardButton(dividir_lineas(s), callback_data=f"modalidad_{i}")]
@@ -274,7 +280,7 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
 
     context.user_data["modalidades_filtradas"] = modalidades
     await query.edit_message_text("Selecciona la modalidad/incidencia:", reply_markup=InlineKeyboardMarkup(botones))
-    
+
     return "ELEGIR_MODALIDAD"
 
 async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -297,6 +303,9 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return ConversationHandler.END
 
     await query.edit_message_text("No se encontró información para esa combinación.")
+    await query.message.reply_text("¿Deseas realizar otra consulta?", reply_markup=InlineKeyboardMarkup([
+    [InlineKeyboardButton("Volver al menú", callback_data="iniciar_consulta")]]))
+
     return ConversationHandler.END
 
 if __name__ == "__main__":
@@ -323,6 +332,7 @@ if __name__ == "__main__":
     app.add_handler(CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_"))
     app.add_handler(CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder))
+    app.add_handler(CallbackQueryHandler(iniciar_consulta, pattern="^iniciar_consulta$"))
 
     app.run_webhook(
         listen="0.0.0.0",
