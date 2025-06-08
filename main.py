@@ -61,6 +61,13 @@ async def guardar_rango(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Unidad de adscripción:")
     return UNIDAD
 
+def dividir_lineas(texto, largo=60):
+    partes = texto.strip().split(". ", 1)
+    if len(partes) > 1:
+        return partes[0] + ".\n" + partes[1][:largo]
+    return texto[:largo] + "\n"
+
+
 async def guardar_unidad(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['unidad'] = update.message.text
 
@@ -247,9 +254,13 @@ async def mostrar_situaciones(update: Update, context: ContextTypes.DEFAULT_TYPE
     if not situaciones:
         await query.edit_message_text("No se encontraron situaciones para este tema.")
         return
+    
+    situaciones_unicas = list(sorted(set(situaciones)))
+    usuarios_contexto[user_id]['situaciones'] = situaciones_unicas
 
     keyboard = [
-        [InlineKeyboardButton(s[:50], callback_data=f"situacion_{s[:30]}")] for s in situaciones[:25]
+        [InlineKeyboardButton(dividir_lineas(s), callback_data=f"situacion_{i}")]
+        for i, s in enumerate(situaciones_unicas[:25])
     ]
     await query.edit_message_text("Selecciona la situación:", reply_markup=InlineKeyboardMarkup(keyboard))
     return "ELEGIR_SITUACION"
@@ -259,9 +270,11 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
     query = update.callback_query
     await query.answer()
     user_id = query.from_user.id
-    situacion = query.data.replace("situacion_", "")
+    index = int(query.data.replace("situacion_", ""))
+    situacion = usuarios_contexto[user_id]['situaciones'][index]
     usuarios_contexto[user_id]['situacion'] = situacion
     tema = usuarios_contexto[user_id]['tema']
+
 
     # Filtrar modalidades para la situación seleccionada
     modalidades = [item['modalidad'] for item in json_data if item['situacion'] == situacion and tema in item.get('origen', '').lower()]
