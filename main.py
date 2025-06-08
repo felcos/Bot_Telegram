@@ -76,7 +76,7 @@ async def guardar_unidad(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     keyboard = [[
-        InlineKeyboardButton("Capitales", callback_data='tema_legitimacion'),
+        InlineKeyboardButton("Capitales", callback_data='tema_capitales'),
         InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')
     ], [
         InlineKeyboardButton("Tributos", callback_data='tema_tributos'),
