@@ -104,7 +104,7 @@ async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     modo = query.data
     user_id = query.from_user.id
     usuarios_contexto[query.from_user.id]['modo'] = modo
-    if modo == 'consulta_guiada' and usuarios_contexto[user_id]['tema'] == 'capitales':
+    if modo == "consulta_guiada":
         return await mostrar_situaciones(update, context)
     await query.edit_message_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí.")
     return ConversationHandler.END
@@ -188,50 +188,56 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 
-async def mostrar_situaciones(update: Update, context: CallbackContext):
+async def mostrar_situaciones(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+    user_id = query.from_user.id
+    tema = usuarios_contexto[user_id]['tema']
 
-    situaciones = sorted(set(item["situacion"] for item in json_data if usuarios_contexto[query.from_user.id]["tema"] == "capitales"))
-    keyboard = [[InlineKeyboardButton(situacion, callback_data=f"situacion_{situacion}")] for situacion in situaciones[:20]]
+    # Filtrar situaciones únicas del tema seleccionado
+    situaciones = list(set(item['situacion'] for item in json_data if tema in item.get('origen', '').lower()))
+    situaciones.sort()
+    keyboard = [[InlineKeyboardButton(s, callback_data=f"situacion_{s}")] for s in situaciones[:25]]  # Máx 25 botones
     await query.edit_message_text("Selecciona la situación:", reply_markup=InlineKeyboardMarkup(keyboard))
+    return "ELEGIR_SITUACION"
 
-    return "MODALIDAD"
-
-async def mostrar_modalidades(update: Update, context: CallbackContext):
+async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+    user_id = query.from_user.id
     situacion = query.data.replace("situacion_", "")
-    user_id = query.from_user.id
-    usuarios_contexto[user_id]["situacion"] = situacion
+    usuarios_contexto[user_id]['situacion'] = situacion
+    tema = usuarios_contexto[user_id]['tema']
 
-    modalidades = sorted(set(item["modalidad"] for item in json_data if item["situacion"] == situacion and usuarios_contexto[user_id]["tema"] == "capitales"))
-    keyboard = [[InlineKeyboardButton(modalidad, callback_data=f"modalidad_{modalidad}")] for modalidad in modalidades[:20]]
+    # Filtrar modalidades para la situación seleccionada
+    modalidades = [item['modalidad'] for item in json_data if item['situacion'] == situacion and tema in item.get('origen', '').lower()]
+    modalidades = list(set(modalidades))
+    modalidades.sort()
+    keyboard = [[InlineKeyboardButton(m, callback_data=f"modalidad_{m}")] for m in modalidades[:25]]
     await query.edit_message_text("Selecciona la modalidad:", reply_markup=InlineKeyboardMarkup(keyboard))
+    return "ELEGIR_MODALIDAD"
 
-    return ConversationHandler.END
-
-async def mostrar_respuesta(update: Update, context: CallbackContext):
+async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    modalidad = query.data.replace("modalidad_", "")
     user_id = query.from_user.id
-    situacion = usuarios_contexto[user_id].get("situacion", "")
-    tema = usuarios_contexto[user_id].get("tema", "")
+    modalidad = query.data.replace("modalidad_", "")
+    situacion = usuarios_contexto[user_id]['situacion']
+    tema = usuarios_contexto[user_id]['tema']
 
     for item in json_data:
-        if item.get("situacion") == situacion and item.get("modalidad") == modalidad and tema == "capitales":
-            respuesta = (
-                f"Situación: {item.get('situacion')}\n"
-                f"Modalidad: {item.get('modalidad')}\n"
-                f"Procedimiento: {item.get('procedimiento')}\n"
-                f"Referencia Legal: {item.get('referencia_legal')}"
+        if item['situacion'] == situacion and item['modalidad'] == modalidad and tema in item.get('origen', '').lower():
+            texto = (
+                f"Situación: {item['situacion']}\n"
+                f"Modalidad: {item['modalidad']}\n"
+                f"Procedimiento: {item.get('procedimiento', 'No disponible')}\n"
+                f"Referencia Legal: {item.get('referencia_legal', 'No disponible')}"
             )
-            rango = usuarios_contexto[user_id].get("rango", "")
-            await query.edit_message_text(f"Mi {rango},\n\n{respuesta}")
-            return
-    await query.edit_message_text("No se encontró información para esa combinación.")
+            await query.edit_message_text(texto)
+            return ConversationHandler.END
 
+    await query.edit_message_text("No se encontró información para esa combinación.")
+    return ConversationHandler.END
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
@@ -246,7 +252,8 @@ if __name__ == "__main__":
             UNIDAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, guardar_unidad)],
             TEMA: [CallbackQueryHandler(elegir_tema)],
             TIPO_CONSULTA: [CallbackQueryHandler(tipo_consulta)],
-            "MODALIDAD": [CallbackQueryHandler(mostrar_modalidades)],
+            "ELEGIR_SITUACION": [CallbackQueryHandler(mostrar_modalidades, pattern="^situacion_")],
+            "ELEGIR_MODALIDAD": [CallbackQueryHandler(mostrar_resultado, pattern="^modalidad_")],
         },
         fallbacks=[]
     )
