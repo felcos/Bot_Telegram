@@ -105,8 +105,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def iniciar_consulta_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    await context.bot.send_message(chat_id=query.message.chat.id, text="Indica tus apellidos:")
-    return APELLIDOS
+    user_id = query.from_user.id
+
+    if user_id in usuarios_contexto and 'rango' in usuarios_contexto[user_id]:
+        keyboard = [
+            [InlineKeyboardButton("Legitimación", callback_data='tema_capitales'),
+             InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')],
+            [InlineKeyboardButton("Tributos", callback_data='tema_tributos'),
+             InlineKeyboardButton("Aduana", callback_data='tema_aduana')],
+        ]
+        await query.edit_message_text("¿Sobre qué tema es tu nueva consulta?", reply_markup=InlineKeyboardMarkup(keyboard))
+        return TEMA
+    else:
+        await query.edit_message_text("Indica tus apellidos:")
+        return APELLIDOS
+
 
 async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -222,6 +235,19 @@ async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.edit_message_text("Perfecto, puedes comenzar tu consulta escribiéndola aquí.")
     return ConversationHandler.END
 
+def dividir_respuesta(texto, limite=4000):
+    partes = []
+    while len(texto) > limite:
+        corte = texto.rfind("\n", 0, limite)
+        if corte == -1:
+            corte = limite
+        partes.append(texto[:corte])
+        texto = texto[corte:].lstrip()
+    if texto:
+        partes.append(texto)
+    return partes
+
+
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pregunta = update.message.text
     user_id = update.effective_user.id
@@ -236,12 +262,14 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await documentar(update, context)
             return
 
-
         resultado_tabla = buscar_en_tablas(pregunta, documentos_tablas)
         if resultado_tabla:
-            await update.message.reply_text(prefijo + resultado_tabla)
+            respuesta_completa = prefijo + resultado_tabla
+            for parte in dividir_respuesta(respuesta_completa):
+                await update.message.reply_text(parte)
             return
 
+        # Búsqueda por similitud en json_data
         mejores = []
         for item in json_data:
             texto = f"{item.get('situacion', '')} {item.get('modalidad', '')}"
@@ -257,9 +285,12 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"Procedimiento: {item.get('procedimiento')}\n"
                 f"Referencia Legal: {item.get('referencia_legal')}"
             )
-            await update.message.reply_text(prefijo + respuesta_json)
+            respuesta_completa = prefijo + respuesta_json
+            for parte in dividir_respuesta(respuesta_completa):
+                await update.message.reply_text(parte)
             return
 
+        # Si no encontró nada en el JSON ni tabla, se pregunta al modelo
         contexto = "\n".join([texto[:1000] for _, texto in documentos_texto])
         prompt = (
             "Responde como asesor legal. Si detectas que el usuario puede necesitar una plantilla, menciónala claramente.\n\n"
@@ -281,18 +312,21 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ruta = os.path.join("templates", plantilla)
             if os.path.exists(ruta):
                 await update.message.reply_document(document=open(ruta, "rb"), filename=plantilla, caption="Aquí tienes el archivo solicitado.")
-                await update.message.reply_text(prefijo + texto_respuesta)
+                for parte in dividir_respuesta(prefijo + texto_respuesta):
+                    await update.message.reply_text(parte)
                 return
             else:
                 texto_respuesta += "\n\nNota: El documento solicitado no está disponible. Contacta con el administrador."
 
-        await update.message.reply_text(prefijo + texto_respuesta)
+        for parte in dividir_respuesta(prefijo + texto_respuesta):
+            await update.message.reply_text(parte)
 
     except openai.RateLimitError:
         await update.message.reply_text("Has superado el límite de uso de OpenAI. Intenta más tarde.")
     except Exception as e:
         logging.exception("Error al procesar la pregunta")
         await update.message.reply_text("Lo siento, ha ocurrido un error procesando tu solicitud.")
+
 
 
 from telegram.ext import CallbackContext  # Si no está importado aún
