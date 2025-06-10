@@ -477,14 +477,22 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"✅ *Procedimiento:*\n{item.get('procedimiento', 'No disponible')}\n\n"
                 f"📜 *Referencia Legal:*\n{item.get('referencia_legal', 'No disponible')}"
             )
-            await query.edit_message_text(texto, parse_mode="Markdown")
+
+            partes = dividir_respuesta(texto)
+            try:
+                await query.edit_message_text(partes[0], parse_mode="Markdown")
+                for parte in partes[1:]:
+                    await query.message.reply_text(parte, parse_mode="Markdown")
+            except Exception:
+                for parte in partes:
+                    await query.message.reply_text(parte, parse_mode="Markdown")
+
             encontrado = True
             break
 
     if not encontrado:
         await query.edit_message_text("⚠️ No se encontró información detallada para esa combinación.")
 
-    # Mensaje para continuar
     # Mensaje para continuar
     keyboard = [
         [InlineKeyboardButton("📄 Descargar un documento", callback_data="mostrar_documentos")],
@@ -496,6 +504,7 @@ async def mostrar_resultado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     return ConversationHandler.END
+
 
 import os
 
