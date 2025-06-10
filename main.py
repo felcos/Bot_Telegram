@@ -334,8 +334,16 @@ async def mostrar_situaciones(update: Update, context: ContextTypes.DEFAULT_TYPE
     situaciones.sort()
 
     if not situaciones:
-        await query.edit_message_text("No se encontraron situaciones para este tema.")
-        return
+        keyboard = [
+            [InlineKeyboardButton("📄 Descargar un documento", callback_data="mostrar_documentos")],
+            [InlineKeyboardButton("🔁 Nueva consulta guiada", callback_data="iniciar_consulta_callback")]
+        ]
+        await query.message.reply_text(
+            "¿No se encontraron Situaciones para este tema, Desea realizar otra acción?",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+        return ConversationHandler.END
+
     
     situaciones_filtradas = sorted(set(item['situacion'] for item in json_data if item.get('origen', '').lower() == tema))
     usuarios_contexto[user_id]['situaciones'] = situaciones_filtradas  # Guardamos la lista completa
@@ -368,8 +376,16 @@ async def mostrar_modalidades(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
     if not modalidades:
-        await query.edit_message_text("No se encontraron modalidades para esa situación.")
-        return
+        keyboard = [
+            [InlineKeyboardButton("📄 Descargar un documento", callback_data="mostrar_documentos")],
+            [InlineKeyboardButton("🔁 Nueva consulta guiada", callback_data="iniciar_consulta_callback")]
+        ]
+        await query.message.reply_text(
+            "¿No se encontraron Modalidades para esta situación, Desea realizar otra acción?",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+        return ConversationHandler.END
 
     modalidades_filtradas = sorted(set(
         item['modalidad'] for item in json_data
