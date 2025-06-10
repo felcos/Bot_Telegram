@@ -120,7 +120,7 @@ async def tipo_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def iniciar_consulta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    if user_id in usuarios_contexto:
+    if user_id in usuarios_contexto and 'rango' in usuarios_contexto[user_id]:
         await update.message.reply_text("¿Sobre qué tema es tu nueva consulta?", reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("Legitimación", callback_data='tema_capitales'),
              InlineKeyboardButton("Criptoactivos", callback_data='tema_cripto')],
@@ -147,7 +147,7 @@ async def guardar_nombres(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def guardar_cedula(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['cedula'] = update.message.text
-    await update.message.reply_text("Grado:")
+    await update.message.reply_text("Grado o Gerarquía:")
     return RANGO
 
 async def guardar_rango(update: Update, context: ContextTypes.DEFAULT_TYPE):
