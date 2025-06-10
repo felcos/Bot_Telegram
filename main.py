@@ -333,7 +333,7 @@ from telegram.ext import CallbackContext  # Si no está importado aún
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import Update
 from telegram.ext import CallbackContext
-
+from telegram.error import BadRequest
 
 async def mostrar_procedimiento_y_referencia(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -350,7 +350,17 @@ async def mostrar_procedimiento_y_referencia(update: Update, context: ContextTyp
             procedimiento = item.get("procedimiento", "No se encontró el procedimiento.")
             referencia = item.get("referencia_legal", "No hay referencias legales.")
             texto = f"✅ *Procedimiento:*\n{procedimiento}\n\n📜 *Referencia Legal:*\n{referencia}"
-            await query.edit_message_text(texto, parse_mode="Markdown")
+            partes = dividir_respuesta(texto)
+            try:
+                await query.edit_message_text(partes[0], parse_mode="Markdown")
+                for parte in partes[1:]:
+                    await query.message.reply_text(parte, parse_mode="Markdown")
+            except BadRequest as e:
+                if "Message_too_long" in str(e):
+                    for parte in partes:
+                        await query.message.reply_text(parte, parse_mode="Markdown")
+                else:
+                    raise
             return
     await query.edit_message_text("No se encontró información detallada para esa modalidad.")
 
