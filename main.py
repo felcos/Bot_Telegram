@@ -37,7 +37,7 @@ async def mostrar_documentos(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await query.answer()
 
     archivos = os.listdir("templates")
-    archivos = [f for f in archivos if f.endswith(".docx") or f.endswith(".pdf") or f.endswith(".txt")]
+    archivos = [f for f in archivos if f.endswith(".docx") or f.endswith(".pdf") or f.endswith(".txt") or f.endswith(".xls")]
 
     if not archivos:
         await query.edit_message_text("No hay documentos disponibles para descargar.")
