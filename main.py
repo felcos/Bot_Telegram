@@ -160,7 +160,7 @@ async def guardar_nombres(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def guardar_cedula(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['cedula'] = update.message.text
-    await update.message.reply_text("Grado o Gerarquía:")
+    await update.message.reply_text("Grado o Jerarquía:")
     return RANGO
 
 async def guardar_rango(update: Update, context: ContextTypes.DEFAULT_TYPE):
